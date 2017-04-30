@@ -10,6 +10,9 @@ namespace Sres.Net.EEIP
 {
     class EEIPClient
     {
+        TcpClient client;
+        NetworkStream stream;
+        UInt32 sessionHandle;
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
@@ -74,6 +77,251 @@ namespace Sres.Net.EEIP
             }
             return returnList;
         }
+
+        /// <summary>
+        /// Sends a RegisterSession command to a target to initiate session
+        /// </summary>
+        /// <param name="address">IP-Address of the target device</param> 
+        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
+        /// <returns>Session Handle</returns>	
+        public UInt32 RegisterSession(UInt32 address, UInt16 port)
+        {
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.Command = Encapsulation.CommandsEnum.RegisterSession;
+            encapsulation.Length = 4;
+            encapsulation.CommandSpecificData.Add(1);       //Protocol version (should be set to 1)
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);       //Session options shall be set to "0"
+            encapsulation.CommandSpecificData.Add(0);
+
+
+            string ipAddress = Encapsulation.CIPIdentityItem.getIPAddress(address);
+            client = new TcpClient(ipAddress, port);
+            stream = client.GetStream();
+
+            stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
+            byte[] data = new Byte[256];
+
+            Int32 bytes = stream.Read(data, 0, data.Length);
+
+            UInt32 returnvalue = (UInt32)data[4] + (((UInt32)data[5]) << 8) + (((UInt32)data[6]) << 16) + (((UInt32)data[7]) << 24);
+            this.sessionHandle = returnvalue;
+            return returnvalue;
+        }
+
+        /// <summary>
+        /// Sends a RegisterSession command to a target to initiate session
+        /// </summary>
+        /// <param name="address">IP-Address of the target device</param> 
+        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
+        /// <returns>Session Handle</returns>	
+        public UInt32 RegisterSession(string address, UInt16 port)
+        {
+            string[] addressSubstring = address.Split('.');
+            UInt32 ipAddress = UInt32.Parse(addressSubstring[3]) + (UInt32.Parse(addressSubstring[2]) << 8) + (UInt32.Parse(addressSubstring[1]) << 16) + (UInt32.Parse(addressSubstring[0]) << 24);
+            return RegisterSession(ipAddress, port);
+        }
+
+        public byte[] getAttributeSingle(int classID, int instanceID, int attributeID)
+        {
+            byte[] dataToSend = new byte[48];
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.SessionHandle = sessionHandle;
+            encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
+            encapsulation.Length = 24;
+            //---------------Interface Handle CIP
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Interface Handle CIP
+
+            //----------------Timeout
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Timeout
+
+            //Common Packet Format (Table 2-6.1)
+            Encapsulation.CommonPacketFormat commonPacketFormat = new Encapsulation.CommonPacketFormat();
+            commonPacketFormat.ItemCount = 0x02;
+
+            commonPacketFormat.AddressItem = 0x0000;        //NULL (used for UCMM Messages)
+            commonPacketFormat.AddressLength = 0x0000;
+
+            commonPacketFormat.DataItem = 0xB2;
+            commonPacketFormat.DataLength = 8;
+
+
+
+            //----------------CIP Command "Get Attribute Single"
+            commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Get_Attribute_Single);
+            //----------------CIP Command "Get Attribute Single"
+
+            //----------------Requested Path size
+            commonPacketFormat.Data.Add(3);
+            //----------------Requested Path size
+
+            //----------------Path segment for Class ID
+            commonPacketFormat.Data.Add(0x20);
+            commonPacketFormat.Data.Add((byte)classID);
+            //----------------Path segment for Class ID
+
+            //----------------Path segment for Instance ID
+            commonPacketFormat.Data.Add(0x24);
+            commonPacketFormat.Data.Add((byte)instanceID);
+            //----------------Path segment for Instace ID
+
+            //----------------Path segment for Attribute ID
+            commonPacketFormat.Data.Add(0x30);
+            commonPacketFormat.Data.Add((byte)attributeID);
+            //----------------Path segment for Attribute ID
+
+            byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
+            System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
+            System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
+            encapsulation.toBytes();
+
+            stream.Write(dataToWrite, 0, dataToWrite.Length);
+            byte[] data = new Byte[256];
+
+            Int32 bytes = stream.Read(data, 0, data.Length);
+
+            //--------------------------BEGIN Error?
+            if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
+            {
+                switch (data[42])
+                {
+                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
+                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
+
+                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]); 
+                }
+            }
+            //--------------------------END Error?
+
+            byte[] returnData = new byte[bytes - 44];
+            System.Buffer.BlockCopy(data, 44, returnData, 0, bytes-44);
+
+            return returnData;
+        }
+
+        /// <summary>
+        /// Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
+        /// </summary>
+        /// <param name="classID">Class id of requested Attributes</param> 
+        /// <param name="instanceID">Instance of Requested Attributes (0 for class Attributes)</param> 
+        /// <returns>Session Handle</returns>	
+        public byte[] GetAttributesAll(int classID, int instanceID)
+        {
+            byte[] dataToSend = new byte[46];
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.SessionHandle = sessionHandle;
+            encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
+            encapsulation.Length = 22;
+            //---------------Interface Handle CIP
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Interface Handle CIP
+
+            //----------------Timeout
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Timeout
+
+            //Common Packet Format (Table 2-6.1)
+            Encapsulation.CommonPacketFormat commonPacketFormat = new Encapsulation.CommonPacketFormat();
+            commonPacketFormat.ItemCount = 0x02;
+
+            commonPacketFormat.AddressItem = 0x0000;        //NULL (used for UCMM Messages)
+            commonPacketFormat.AddressLength = 0x0000;
+
+            commonPacketFormat.DataItem = 0xB2;
+            commonPacketFormat.DataLength = 6;
+
+
+
+            //----------------CIP Command "Get Attribute Single"
+            commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Get_Attributes_All);
+            //----------------CIP Command "Get Attribute Single"
+
+            //----------------Requested Path size
+            commonPacketFormat.Data.Add(2);
+            //----------------Requested Path size
+
+            //----------------Path segment for Class ID
+            commonPacketFormat.Data.Add(0x20);
+            commonPacketFormat.Data.Add((byte)classID);
+            //----------------Path segment for Class ID
+
+            //----------------Path segment for Instance ID
+            commonPacketFormat.Data.Add(0x24);
+            commonPacketFormat.Data.Add((byte)instanceID);
+            //----------------Path segment for Instace ID
+
+
+            byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
+            System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
+            System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
+           
+
+            stream.Write(dataToWrite, 0, dataToWrite.Length);
+            byte[] data = new Byte[256];
+
+            Int32 bytes = stream.Read(data, 0, data.Length);
+            //--------------------------BEGIN Error?
+            if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
+            {
+                switch (data[42])
+                {
+                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
+                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
+
+                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
+                }
+            }
+            //--------------------------END Error?
+
+            byte[] returnData = new byte[bytes - 44];
+            System.Buffer.BlockCopy(data, 44, returnData, 0, bytes - 44);
+
+            return returnData;
+        }
+
+        /// <summary>
+        /// Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
+        /// </summary>
+        /// <param name="classID">Class id of requested Attributes</param> 
+        public byte[] GetAttributesAll(int classID)
+        {
+            return this.GetAttributesAll(classID, 0);
+        }
+
+        ObjectLibrary.IdentityObject identityObject;
+        public ObjectLibrary.IdentityObject IdentityObject
+        {
+            get
+            {
+                if (identityObject == null)
+                    identityObject = new ObjectLibrary.IdentityObject(this);
+                return identityObject;
+
+            }
+        }
+
+        ObjectLibrary.MessageRouterObject messageRouterObject;
+        public ObjectLibrary.MessageRouterObject MessageRouterObject
+        {
+            get
+            {
+                if (messageRouterObject == null)
+                    messageRouterObject = new ObjectLibrary.MessageRouterObject(this);
+                return messageRouterObject;
+
+            }
+        }
+
     }
 
 

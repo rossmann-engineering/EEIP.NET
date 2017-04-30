@@ -10,11 +10,12 @@ namespace Sres.Net.EEIP
     class Encapsulation
     {
         public CommandsEnum Command { get; set; }
-        private UInt16 length;
-        private UInt32 sessionHandle;
-        private StatusEnum status;
+        public UInt16 Length { get; set; }
+        public UInt32 SessionHandle { get; set; }
+        public StatusEnum Status { get; }
         private byte[] senderContext = new byte[8];
-        private UInt32 options;
+        private UInt32 options = 0;
+        public List<byte> CommandSpecificData = new List<byte>();
 
         /// <summary>
         /// Table 2-3.3 Error Codes
@@ -47,6 +48,41 @@ namespace Sres.Net.EEIP
             Cancel = 0x0073
         }
 
+        public byte[] toBytes()
+        {
+            byte[] returnValue = new byte[24 + CommandSpecificData.Count];
+            returnValue[0] = (byte)this.Command;
+            returnValue[1] = (byte)((UInt16)this.Command >> 8);
+            returnValue[2] = (byte)this.Length;
+            returnValue[3] = (byte)((UInt16)this.Length >> 8);
+            returnValue[4] = (byte)this.SessionHandle;
+            returnValue[5] = (byte)((UInt32)this.SessionHandle >> 8);
+            returnValue[6] = (byte)((UInt32)this.SessionHandle >> 16);
+            returnValue[7] = (byte)((UInt32)this.SessionHandle >> 24);
+            returnValue[8] = (byte)this.Status;
+            returnValue[9] = (byte)((UInt16)this.Status >> 8);
+            returnValue[10] = (byte)((UInt16)this.Status >> 16);
+            returnValue[11] = (byte)((UInt16)this.Status >> 24);
+            returnValue[12] = senderContext[0];
+            returnValue[13] = senderContext[1];
+            returnValue[14] = senderContext[2];
+            returnValue[15] = senderContext[3];
+            returnValue[16] = senderContext[4];
+            returnValue[17] = senderContext[5];
+            returnValue[18] = senderContext[6];
+            returnValue[19] = senderContext[7];
+            returnValue[20] = (byte)this.options;
+            returnValue[21] = (byte)((UInt16)this.options >> 8);
+            returnValue[22] = (byte)((UInt16)this.options >> 16);
+            returnValue[23] = (byte)((UInt16)this.options >> 24);
+            for (int i = 0; i < CommandSpecificData.Count; i++)
+            {
+                returnValue[24 + i] = CommandSpecificData[i];
+            }
+            return returnValue;
+        }
+
+
         /// <summary>
         /// Table 2-4.4 CIP Identity Item
         /// </summary>
@@ -69,7 +105,7 @@ namespace Sres.Net.EEIP
 
             public static CIPIdentityItem getCIPIdentityItem(int startingByte, byte[] receivedData)
             {
-                startingByte = startingByte + 2;
+                startingByte = startingByte + 2;            //Skipped ItemCount
                 CIPIdentityItem cipIdentityItem = new CIPIdentityItem();
                 cipIdentityItem.ItemTypeCode = Convert.ToUInt16(receivedData[0+startingByte]
                                                                     | (receivedData[1 + startingByte] << 8));
@@ -105,8 +141,18 @@ namespace Sres.Net.EEIP
                 cipIdentityItem.State1 = receivedData[receivedData.Length - 1];
                 return cipIdentityItem;
             }
+            /// <summary>
+            /// Converts an IP-Address in UIint32 Format (Received by Device)
+            /// </summary>
+            public static string getIPAddress(UInt32 address)
+            {
+                return ((byte)(address >> 24)).ToString()+"." + ((byte)(address >> 16)).ToString()+"."+((byte)(address >> 8)).ToString()+"."+((byte)(address)).ToString();
+            }
+
 
         }
+
+
 
 
         /// <summary>
@@ -120,7 +166,36 @@ namespace Sres.Net.EEIP
             public byte[] SIN_Zero = new byte[8];
         }
 
- 
+        public class CommonPacketFormat
+        {
+            public UInt16 ItemCount = 2;
+            public UInt16 AddressItem = 0x0000;
+            public UInt16 AddressLength = 0;
+            public UInt16 DataItem = 0xB2; //0xB2 = Unconnected Data Item
+            public UInt16 DataLength = 8;
 
+            public List<byte> Data = new List<byte>();
+
+
+            public byte[] toBytes()
+            {
+                byte[] returnValue = new byte[10 + Data.Count];
+                returnValue[0] = (byte)this.ItemCount;
+                returnValue[1] = (byte)((UInt16)this.ItemCount >> 8);
+                returnValue[2] = (byte)this.AddressItem;
+                returnValue[3] = (byte)((UInt16)this.AddressItem >> 8);
+                returnValue[4] = (byte)this.AddressLength;
+                returnValue[5] = (byte)((UInt16)this.AddressLength >> 8);
+                returnValue[6] = (byte)this.DataItem;
+                returnValue[7] = (byte)((UInt16)this.DataItem >> 8);
+                returnValue[8] = (byte)this.DataLength;
+                returnValue[9] = (byte)((UInt16)this.DataLength >> 8);
+                for (int i = 0; i < Data.Count; i++)
+                {
+                    returnValue[10 + i] = Data[i];
+                }
+                return returnValue;
+            }
+        }
     }
 }
