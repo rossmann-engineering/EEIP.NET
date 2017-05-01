@@ -13,6 +13,7 @@ namespace Sres.Net.EEIP
         TcpClient client;
         NetworkStream stream;
         UInt32 sessionHandle;
+        ushort port = 0xAF12;
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
@@ -110,6 +111,22 @@ namespace Sres.Net.EEIP
         }
 
         /// <summary>
+        /// Sends a UnRegisterSession command to a target to terminate session
+        /// </summary> 
+        public void UnRegisterSession()
+        {
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.Command = Encapsulation.CommandsEnum.UnRegisterSession;
+            encapsulation.Length = 0;
+            encapsulation.SessionHandle =  sessionHandle;
+ 
+            stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
+            byte[] data = new Byte[256];
+            client.Close();
+            stream.Close();
+        }
+
+        /// <summary>
         /// Sends a RegisterSession command to a target to initiate session
         /// </summary>
         /// <param name="address">IP-Address of the target device</param> 
@@ -120,6 +137,18 @@ namespace Sres.Net.EEIP
             string[] addressSubstring = address.Split('.');
             UInt32 ipAddress = UInt32.Parse(addressSubstring[3]) + (UInt32.Parse(addressSubstring[2]) << 8) + (UInt32.Parse(addressSubstring[1]) << 16) + (UInt32.Parse(addressSubstring[0]) << 24);
             return RegisterSession(ipAddress, port);
+        }
+
+        /// <summary>
+        /// Sends a RegisterSession command to a target to initiate session with the Standard-Port 0xAF12
+        /// </summary>
+        /// <param name="address">IP-Address of the target device</param> 
+        /// <returns>Session Handle</returns>	
+        public UInt32 RegisterSession(string address)
+        {
+            string[] addressSubstring = address.Split('.');
+            UInt32 ipAddress = UInt32.Parse(addressSubstring[3]) + (UInt32.Parse(addressSubstring[2]) << 8) + (UInt32.Parse(addressSubstring[1]) << 16) + (UInt32.Parse(addressSubstring[0]) << 24);
+            return RegisterSession(ipAddress, this.port);
         }
 
         public byte[] getAttributeSingle(int classID, int instanceID, int attributeID)
@@ -193,7 +222,8 @@ namespace Sres.Net.EEIP
                 {
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-
+                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
+                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
                     default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]); 
                 }
             }
@@ -277,6 +307,99 @@ namespace Sres.Net.EEIP
                 {
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
+                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
+                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
+                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
+                }
+            }
+            //--------------------------END Error?
+
+            byte[] returnData = new byte[bytes - 44];
+            System.Buffer.BlockCopy(data, 44, returnData, 0, bytes - 44);
+
+            return returnData;
+        }
+
+        public byte[] setAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
+        {
+            byte[] dataToSend = new byte[48 + value.Length];
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.SessionHandle = sessionHandle;
+            encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
+            encapsulation.Length = (UInt16)(24+value.Length);
+            //---------------Interface Handle CIP
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Interface Handle CIP
+
+            //----------------Timeout
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Timeout
+
+            //Common Packet Format (Table 2-6.1)
+            Encapsulation.CommonPacketFormat commonPacketFormat = new Encapsulation.CommonPacketFormat();
+            commonPacketFormat.ItemCount = 0x02;
+
+            commonPacketFormat.AddressItem = 0x0000;        //NULL (used for UCMM Messages)
+            commonPacketFormat.AddressLength = 0x0000;
+
+            commonPacketFormat.DataItem = 0xB2;
+            commonPacketFormat.DataLength = (UInt16)(8 + value.Length);
+
+
+
+            //----------------CIP Command "Set Attribute Single"
+            commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Set_Attribute_Single);
+            //----------------CIP Command "Set Attribute Single"
+
+            //----------------Requested Path size
+            commonPacketFormat.Data.Add(3);
+            //----------------Requested Path size
+
+            //----------------Path segment for Class ID
+            commonPacketFormat.Data.Add(0x20);
+            commonPacketFormat.Data.Add((byte)classID);
+            //----------------Path segment for Class ID
+
+            //----------------Path segment for Instance ID
+            commonPacketFormat.Data.Add(0x24);
+            commonPacketFormat.Data.Add((byte)instanceID);
+            //----------------Path segment for Instace ID
+
+            //----------------Path segment for Attribute ID
+            commonPacketFormat.Data.Add(0x30);
+            commonPacketFormat.Data.Add((byte)attributeID);
+            //----------------Path segment for Attribute ID
+
+            //----------------Data
+            for (int i = 0; i < value.Length; i++)
+            {
+                commonPacketFormat.Data.Add(value[i]);
+            }
+            //----------------Data
+
+            byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
+            System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
+            System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
+            encapsulation.toBytes();
+
+            stream.Write(dataToWrite, 0, dataToWrite.Length);
+            byte[] data = new Byte[256];
+
+            Int32 bytes = stream.Read(data, 0, data.Length);
+
+            //--------------------------BEGIN Error?
+            if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
+            {
+                switch (data[42])
+                {
+                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
+                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
+                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
+                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
 
                     default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
                 }
@@ -318,6 +441,18 @@ namespace Sres.Net.EEIP
                 if (messageRouterObject == null)
                     messageRouterObject = new ObjectLibrary.MessageRouterObject(this);
                 return messageRouterObject;
+
+            }
+        }
+
+        ObjectLibrary.AssemblyObject assemblyObject;
+        public ObjectLibrary.AssemblyObject AssemblyObject
+        {
+            get
+            {
+                if (assemblyObject == null)
+                    assemblyObject = new ObjectLibrary.AssemblyObject(this);
+                return assemblyObject;
 
             }
         }
