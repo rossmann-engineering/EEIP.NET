@@ -15,7 +15,7 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < cipIdentityItem.Count; i++)
             {
-                Console.WriteLine("Ethernet/IP Device Found: ");
+                Console.WriteLine("Ethernet/IP Device Found:");
                 Console.WriteLine(cipIdentityItem[i].ProductName1);
                 Console.WriteLine("IP-Address: " + Sres.Net.EEIP.Encapsulation.CIPIdentityItem.getIPAddress(cipIdentityItem[i].SocketAddress.SIN_Address));
                 Console.WriteLine("Port: " + cipIdentityItem[i].SocketAddress.SIN_port);
