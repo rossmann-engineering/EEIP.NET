@@ -12,6 +12,20 @@ namespace ConsoleApplication1
         {
             Sres.Net.EEIP.EEIPClient eipClient = new Sres.Net.EEIP.EEIPClient();
             List<Sres.Net.EEIP.Encapsulation.CIPIdentityItem> cipIdentityItem = eipClient.ListIdentity();
+
+            for (int i = 0; i < cipIdentityItem.Count; i++)
+            {
+                Console.WriteLine("Ethernet/IP Device Found: ");
+                Console.WriteLine(cipIdentityItem[i].ProductName1);
+                Console.WriteLine("IP-Address: " + Sres.Net.EEIP.Encapsulation.CIPIdentityItem.getIPAddress(cipIdentityItem[i].SocketAddress.SIN_Address));
+                Console.WriteLine("Port: " + cipIdentityItem[i].SocketAddress.SIN_port);
+                Console.WriteLine("Vendor ID: " + cipIdentityItem[i].VendorID1);
+                Console.WriteLine("Product-code: " + cipIdentityItem[i].ProductCode1);
+                Console.WriteLine("Type-Code: " + cipIdentityItem[i].ItemTypeCode);
+            }
+
+
+
             UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.66", 0xAF12);
             eipClient.setAttributeSingle(0x4, 102, 3, new byte[] { 0xff});
             Console.WriteLine(eipClient.AssemblyObject.getInstance(105));

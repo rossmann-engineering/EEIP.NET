@@ -13,7 +13,8 @@ namespace Sres.Net.EEIP
         TcpClient client;
         NetworkStream stream;
         UInt32 sessionHandle;
-        ushort port = 0xAF12;
+        public ushort Port { get; set; } = 0xAF12;
+        public string IPAddress { get; set; } = "172.0.0.1";
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
@@ -124,6 +125,7 @@ namespace Sres.Net.EEIP
             byte[] data = new Byte[256];
             client.Close();
             stream.Close();
+            sessionHandle = 0;
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace Sres.Net.EEIP
         }
 
         /// <summary>
-        /// Sends a RegisterSession command to a target to initiate session with the Standard-Port 0xAF12
+        /// Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port (Standard: 0xAF12)
         /// </summary>
         /// <param name="address">IP-Address of the target device</param> 
         /// <returns>Session Handle</returns>	
@@ -148,11 +150,23 @@ namespace Sres.Net.EEIP
         {
             string[] addressSubstring = address.Split('.');
             UInt32 ipAddress = UInt32.Parse(addressSubstring[3]) + (UInt32.Parse(addressSubstring[2]) << 8) + (UInt32.Parse(addressSubstring[1]) << 16) + (UInt32.Parse(addressSubstring[0]) << 24);
-            return RegisterSession(ipAddress, this.port);
+            return RegisterSession(ipAddress, this.Port);
+        }
+
+        /// <summary>
+        /// Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port and Predefined IPAddress (Standard-Port: 0xAF12)
+        /// </summary>
+        /// <returns>Session Handle</returns>	
+        public UInt32 RegisterSession()
+        {
+            
+            return RegisterSession(this.IPAddress, this.Port);
         }
 
         public byte[] getAttributeSingle(int classID, int instanceID, int attributeID)
         {
+            if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
+                this.RegisterSession();
             byte[] dataToSend = new byte[48];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
@@ -243,6 +257,8 @@ namespace Sres.Net.EEIP
         /// <returns>Session Handle</returns>	
         public byte[] GetAttributesAll(int classID, int instanceID)
         {
+            if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
+                this.RegisterSession();
             byte[] dataToSend = new byte[46];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
@@ -322,6 +338,8 @@ namespace Sres.Net.EEIP
 
         public byte[] setAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
         {
+            if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
+                this.RegisterSession();
             byte[] dataToSend = new byte[48 + value.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
