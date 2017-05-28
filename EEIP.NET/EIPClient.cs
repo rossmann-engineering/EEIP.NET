@@ -13,8 +13,28 @@ namespace Sres.Net.EEIP
         TcpClient client;
         NetworkStream stream;
         UInt32 sessionHandle;
+        UInt32 connectionID_O_T;
+        UInt32 connectionID_T_O;
+        UInt16 connectionSerialNumber;
         public ushort Port { get; set; } = 0xAF12;
         public string IPAddress { get; set; } = "172.0.0.1";
+        public UInt32 RequestedPacketRate_O_T { get; set; } = 0x7A120;      //500ms
+        public UInt32 RequestedPacketRate_T_O { get; set; } = 0x7A120;      //500ms
+        public bool O_T_OwnerRedundant { get; set; } = true;                //For Forward Open
+        public bool T_O_OwnerRedundant { get; set; } = true;                //For Forward Open
+        public bool O_T_VariableLength { get; set; } = true;                //For Forward Open
+        public bool T_O_VariableLength { get; set; } = true;                //For Forward Open
+        public UInt16 O_T_Length { get; set; } = 505;                //For Forward Open - Max 505
+        public UInt16 T_O_Length { get; set; } = 505;                //For Forward Open - Max 505
+        public ConnectionType O_T_ConnectionType { get; set; } = ConnectionType.Point_to_Point;
+        public ConnectionType T_O_ConnectionType { get; set; } = ConnectionType.Multicast;
+        public Priority O_T_Priority { get; set; } = Priority.Scheduled;
+        public Priority T_O_Priority { get; set; } = Priority.Scheduled;
+        public byte O_T_InstanceID { get; set; } = 0x64;               //Ausgänge
+        public byte T_O_InstanceID { get; set; } = 0x65;               //Eingänge
+
+
+
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
@@ -128,6 +148,201 @@ namespace Sres.Net.EEIP
             sessionHandle = 0;
         }
 
+        public void ForwardOpen()
+        {
+            byte[] dataToSend = new byte[48];
+            int lengthOffset = (5 + (O_T_ConnectionType == ConnectionType.Null ? 0 : 2) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 2));
+
+            Encapsulation encapsulation = new Encapsulation();
+            encapsulation.SessionHandle = sessionHandle;
+            encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
+            encapsulation.Length = (ushort)(57 + (ushort)lengthOffset);
+            //---------------Interface Handle CIP
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Interface Handle CIP
+
+            //----------------Timeout
+            encapsulation.CommandSpecificData.Add(0);
+            encapsulation.CommandSpecificData.Add(0);
+            //----------------Timeout
+
+            //Common Packet Format (Table 2-6.1)
+            Encapsulation.CommonPacketFormat commonPacketFormat = new Encapsulation.CommonPacketFormat();
+            commonPacketFormat.ItemCount = 0x02;
+
+            commonPacketFormat.AddressItem = 0x0000;        //NULL (used for UCMM Messages)
+            commonPacketFormat.AddressLength = 0x0000;
+
+            
+            commonPacketFormat.DataItem = 0xB2;
+            commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset);
+
+
+
+            //----------------CIP Command "Forward Open"
+            commonPacketFormat.Data.Add(0x54);
+            //----------------CIP Command "Forward Open"
+
+            //----------------Requested Path size
+            commonPacketFormat.Data.Add(2);
+            //----------------Requested Path size
+
+            //----------------Path segment for Class ID
+            commonPacketFormat.Data.Add(0x20);
+            commonPacketFormat.Data.Add((byte)6);
+            //----------------Path segment for Class ID
+
+            //----------------Path segment for Instance ID
+            commonPacketFormat.Data.Add(0x24);
+            commonPacketFormat.Data.Add((byte)1);
+            //----------------Path segment for Instace ID
+
+            //----------------Priority and Time/Tick - Table 3-5.16 (Vol. 1)
+            commonPacketFormat.Data.Add(0x03);
+            //----------------Priority and Time/Tick
+
+            //----------------Timeout Ticks - Table 3-5.16 (Vol. 1)
+            commonPacketFormat.Data.Add(0xfa);
+            //----------------Timeout Ticks
+
+            this.connectionID_O_T = 0;
+            this.connectionID_T_O = Convert.ToUInt32(new Random().Next(0xfffffff)+1);
+            commonPacketFormat.Data.Add((byte)connectionID_O_T);
+            commonPacketFormat.Data.Add((byte)(connectionID_O_T >> 8));
+            commonPacketFormat.Data.Add((byte)(connectionID_O_T >> 16));
+            commonPacketFormat.Data.Add((byte)(connectionID_O_T >> 24));
+
+            commonPacketFormat.Data.Add((byte)connectionID_T_O);
+            commonPacketFormat.Data.Add((byte)(connectionID_T_O >> 8));
+            commonPacketFormat.Data.Add((byte)(connectionID_T_O >> 16));
+            commonPacketFormat.Data.Add((byte)(connectionID_T_O >> 24));
+
+            this.connectionSerialNumber = Convert.ToUInt16(new Random().Next(0xFFFF)+2);
+            commonPacketFormat.Data.Add((byte)connectionSerialNumber);
+            commonPacketFormat.Data.Add((byte)(connectionSerialNumber >> 8));
+
+            //----------------Originator Vendor ID
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0);
+            //----------------Originaator Vendor ID
+
+            //----------------Originator Serial Number
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            //----------------Originator Serial Number
+
+            //----------------Timeout Multiplier
+            commonPacketFormat.Data.Add(0);
+            //----------------Timeout Multiplier
+
+            //----------------Reserved
+            commonPacketFormat.Data.Add(0);
+            commonPacketFormat.Data.Add(0);
+            commonPacketFormat.Data.Add(0);
+            //----------------Reserved
+
+            //----------------Requested Packet Rate O->T in Microseconds
+            commonPacketFormat.Data.Add((byte)RequestedPacketRate_O_T);
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_O_T >> 8));
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_O_T >> 16));
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_O_T >> 24));
+            //----------------Requested Packet Rate O->T in Microseconds
+
+            //----------------O->T Network Connection Parameters
+            bool redundantOwner = (bool)O_T_OwnerRedundant;
+            byte connectionType = (byte)O_T_ConnectionType; //1=Multicast, 2=P2P
+            byte priority = (byte)O_T_Priority;         //00=low; 01=High; 10=Scheduled; 11=Urgent
+            bool variableLength = O_T_VariableLength;       //0=fixed; 1=variable
+            UInt16 connectionSize = O_T_Length;      //The maximum size in bytes og the data for each direction (were applicable) of the connection. For a variable -> maximum
+            UInt16 NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
+            commonPacketFormat.Data.Add((byte)NetworkConnectionParameters);
+            commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 8));
+            //----------------O->T Network Connection Parameters
+
+            //----------------Requested Packet Rate T->O in Microseconds
+            commonPacketFormat.Data.Add((byte)RequestedPacketRate_T_O);
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_T_O >> 8));
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_T_O >> 16));
+            commonPacketFormat.Data.Add((byte)(RequestedPacketRate_T_O >> 24));
+            //----------------Requested Packet Rate T->O in Microseconds
+
+            //----------------T->O Network Connection Parameters
+
+
+            redundantOwner = (bool)T_O_OwnerRedundant;
+            connectionType = (byte)T_O_ConnectionType; //1=Multicast, 2=P2P
+            priority = (byte)T_O_Priority;
+            variableLength = T_O_VariableLength;
+            connectionSize = T_O_Length;
+            NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
+            commonPacketFormat.Data.Add((byte)NetworkConnectionParameters);
+            commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 8));
+            //----------------T->O Network Connection Parameters
+
+            //----------------Transport Type/Trigger
+            commonPacketFormat.Data.Add(0x01);
+            //X------- = 0= Client; 1= Server
+            //-XXX---- = Production Trigger, 0 = Cyclic, 1 = CoS, 2 = Application Object
+            //----XXXX = Transport class, 0 = Class 0, 1 = Class 1, 2 = Class 2, 3 = Class 3
+            //----------------Transport Type Trigger
+            //Connection Path size 
+            commonPacketFormat.Data.Add((byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1) ));
+            //Verbindugspfad
+            commonPacketFormat.Data.Add((byte)(0x20));
+            commonPacketFormat.Data.Add((byte)(0x4));
+            commonPacketFormat.Data.Add((byte)(0x24));
+            commonPacketFormat.Data.Add((byte)(0x01));
+            if (O_T_ConnectionType != ConnectionType.Null)
+            {
+                commonPacketFormat.Data.Add((byte)(0x2C));
+                commonPacketFormat.Data.Add((byte)(O_T_InstanceID));
+            }
+            if (T_O_ConnectionType != ConnectionType.Null)
+            {
+                commonPacketFormat.Data.Add((byte)(0x2C));
+                commonPacketFormat.Data.Add((byte)(T_O_InstanceID));
+            }
+
+            //20 04 24 01 2C 65 2C 6B
+
+            byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
+            System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
+            System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
+            encapsulation.toBytes();
+
+            stream.Write(dataToWrite, 0, dataToWrite.Length);
+            byte[] data = new Byte[512];
+
+            Int32 bytes = stream.Read(data, 0, data.Length);
+
+            //--------------------------BEGIN Error?
+            if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
+            {
+                switch (data[42])
+                {
+                    
+                    case 0x1: if (data[43] == 0)
+                                throw new CIPException("Connection failure, General Status Code: " + data[42]);
+                            else
+                                throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45]<<8)|data[44]));
+                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
+                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
+                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
+                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
+
+                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
+                }
+            }
+            //--------------------------END Error?
+
+
+        }
+
         /// <summary>
         /// Sends a RegisterSession command to a target to initiate session
         /// </summary>
@@ -234,6 +449,7 @@ namespace Sres.Net.EEIP
             {
                 switch (data[42])
                 {
+                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
                     case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
@@ -321,6 +537,7 @@ namespace Sres.Net.EEIP
             {
                 switch (data[42])
                 {
+                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
                     case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
@@ -414,6 +631,7 @@ namespace Sres.Net.EEIP
             {
                 switch (data[42])
                 {
+                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
                     case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
@@ -475,6 +693,21 @@ namespace Sres.Net.EEIP
             }
         }
 
+    }
+
+    public enum ConnectionType : byte
+    {
+        Null = 0,
+        Multicast = 1,
+        Point_to_Point = 2
+    }
+
+    public enum Priority : byte
+    {
+        Low = 0,
+        High = 1,
+        Scheduled = 2,
+        Urgent = 3
     }
 
 

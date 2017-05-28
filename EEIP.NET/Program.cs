@@ -26,9 +26,12 @@ namespace ConsoleApplication1
 
 
 
-            UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.66", 0xAF12);
-            eipClient.setAttributeSingle(0x4, 102, 3, new byte[] { 0xff});
-            Console.WriteLine(eipClient.AssemblyObject.getInstance(105));
+            UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.112", 0xAF12);
+//            eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Null;
+//            eipClient.O_T_Length = 0;
+            eipClient.ForwardOpen();
+//            eipClient.setAttributeSingle(0x4, 102, 3, new byte[] { 0xff});
+//            Console.WriteLine(eipClient.AssemblyObject.getInstance(105));
             Console.WriteLine(eipClient.MessageRouterObject.ObjectList.Number);
             Console.WriteLine(Sres.Net.EEIP.Encapsulation.CIPIdentityItem.getIPAddress(cipIdentityItem[0].SocketAddress.SIN_Address));
             Console.WriteLine(eipClient.IdentityObject.VendorID);
@@ -43,6 +46,8 @@ namespace ConsoleApplication1
             //Console.WriteLine("Revision: " + eipClient.IdentityObject.AllClassAttributes.Revision);
             //Console.WriteLine("State: " + eipClient.IdentityObject.State);
             //Console.WriteLine("supported language" + eipClient.IdentityObject.SupportedLanguageList[0]);
+
+            Console.ReadKey();
         }
     }
 }
