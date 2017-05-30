@@ -32,7 +32,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 1);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 1);
                 UInt16 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -45,7 +45,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 2);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 2);
                 UInt16 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -59,7 +59,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 3);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 3);
                 UInt16 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -74,7 +74,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
             get
             {
 
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 4);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 4);
                 Revison returnValue = new Revison();
                 returnValue.MajorRevision = (ushort)(byteArray[0]);
                 returnValue.MinorRevision = (ushort)(byteArray[1]);
@@ -95,7 +95,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 5);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 5);
                 UInt16 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -108,7 +108,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 6);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 6);
                 UInt32 returnValue = ((UInt32)byteArray[3] << 24 | (UInt32)byteArray[2] << 16 | (UInt32)byteArray[1] << 8 | (UInt32)byteArray[0]);
                 return returnValue;
             }
@@ -121,7 +121,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 7);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 7);
                 String returnValue = Encoding.UTF8.GetString(byteArray);
                 return returnValue;
             }
@@ -145,7 +145,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 8);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 8);
                 StateEnum returnValue = (StateEnum) byteArray[0];
                 return returnValue;
             }
@@ -158,7 +158,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 9);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 9);
                 UInt16 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -171,7 +171,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 10);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 10);
                 byte returnValue = (byte)byteArray[0];
                 return returnValue;
             }
@@ -184,7 +184,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(1, 1, 12);
+                byte[] byteArray = eeipClient.GetAttributeSingle(1, 1, 12);
                 string[] returnValue = new string[byteArray.Length / 3];
                 for (int i = 0; i < returnValue.Length; i++)
                 {
@@ -200,7 +200,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.GetAttributesAll(1, 0);
+                byte[] byteArray = eeipClient.GetAttributeAll(1, 0);
                 ClassAttributesStruct returnValue;
                 returnValue.Revision = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.MaxInstance = (UInt16)(byteArray[3] << 8 | byteArray[2]);
@@ -214,7 +214,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.GetAttributesAll(1, 1);
+                byte[] byteArray = eeipClient.GetAttributeAll(1, 1);
                 InstanceAttributesStruct returnValue;
                 returnValue.VendorID = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.DeviceType = (UInt16)(byteArray[3] << 8 | byteArray[2]);

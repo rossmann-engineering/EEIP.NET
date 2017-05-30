@@ -33,15 +33,43 @@ namespace Sres.Net.EEIP
         public byte O_T_InstanceID { get; set; } = 0x64;               //Ausgänge
         public byte T_O_InstanceID { get; set; } = 0x65;               //Eingänge
 
+        public void ReceiveCallback(IAsyncResult ar)
+        {
+            
+            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+            var asyncResult = u.BeginReceive(new AsyncCallback(ReceiveCallback), (UdpState)(ar.AsyncState));
+            System.Net.IPEndPoint e = (System.Net.IPEndPoint)((UdpState)(ar.AsyncState)).e;
 
+            Byte[] receiveBytes = u.EndReceive(ar, ref e);
+            string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
+            // EndReceive worked and we have received data and remote endpoint
+            if (receiveBytes.Length > 0)
+            {
+                UInt16 command = Convert.ToUInt16(receiveBytes[0]
+                                            | (receiveBytes[1] << 8));
+                if (command == 0x63)
+                {
+                    returnList.Add(Encapsulation.CIPIdentityItem.getCIPIdentityItem(24, receiveBytes));
+                }
+            }
+
+        }
+        public class UdpState
+        {
+            public System.Net.IPEndPoint e;
+            public UdpClient u;
+
+        }
+
+        List<Encapsulation.CIPIdentityItem> returnList = new List<Encapsulation.CIPIdentityItem>();
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
         /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>	
         public List<Encapsulation.CIPIdentityItem> ListIdentity()
         {
-            List<Encapsulation.CIPIdentityItem> returnList = new List<Encapsulation.CIPIdentityItem>();
+            
             foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
                 if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
@@ -59,11 +87,18 @@ namespace Sres.Net.EEIP
                             byte[] sendData = new byte[24];
                             sendData[0] = 0x63;               //Command for "ListIdentity"
                             System.Net.Sockets.UdpClient udpClient = new System.Net.Sockets.UdpClient();
-                            System.Net.IPEndPoint endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(multicastAddress), 44818);                           
+                            System.Net.IPEndPoint endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(multicastAddress), 44818);
                             udpClient.Send(sendData, sendData.Length, endPoint);
 
-                            var asyncResult = udpClient.BeginReceive(null, null);
-                            asyncResult.AsyncWaitHandle.WaitOne(500);
+                            UdpState s = new UdpState();
+                            s.e = endPoint;
+                            s.u = udpClient;
+
+                            var asyncResult = udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+
+                            System.Threading.Thread.Sleep(1000);
+                            
+                            /*asyncResult.AsyncWaitHandle.WaitOne(2000);
 
                             while (true)
                             {
@@ -91,7 +126,7 @@ namespace Sres.Net.EEIP
                                 }
                                 else
                                     break;
-                            }
+                            }*/
 
                         }
                     }
@@ -329,7 +364,7 @@ namespace Sres.Net.EEIP
                     case 0x1: if (data[43] == 0)
                                 throw new CIPException("Connection failure, General Status Code: " + data[42]);
                             else
-                                throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45]<<8)|data[44]));
+                                throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45]<<8)|data[44]) + " " + ObjectLibrary.ConnectionManagerObject.GetExtendedStatus((uint)((data[45] << 8) | data[44])));
                     case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
                     case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
                     case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
@@ -378,7 +413,7 @@ namespace Sres.Net.EEIP
             return RegisterSession(this.IPAddress, this.Port);
         }
 
-        public byte[] getAttributeSingle(int classID, int instanceID, int attributeID)
+        public byte[] GetAttributeSingle(int classID, int instanceID, int attributeID)
         {
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
@@ -471,9 +506,9 @@ namespace Sres.Net.EEIP
         /// <param name="classID">Class id of requested Attributes</param> 
         /// <param name="instanceID">Instance of Requested Attributes (0 for class Attributes)</param> 
         /// <returns>Session Handle</returns>	
-        public byte[] GetAttributesAll(int classID, int instanceID)
+        public byte[] GetAttributeAll(int classID, int instanceID)
         {
-            if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
+            if (sessionHandle == 0)             //If a Session is not Registered, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
             byte[] dataToSend = new byte[46];
             Encapsulation encapsulation = new Encapsulation();
@@ -553,7 +588,7 @@ namespace Sres.Net.EEIP
             return returnData;
         }
 
-        public byte[] setAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
+        public byte[] SetAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
         {
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
@@ -652,9 +687,9 @@ namespace Sres.Net.EEIP
         /// Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
         /// </summary>
         /// <param name="classID">Class id of requested Attributes</param> 
-        public byte[] GetAttributesAll(int classID)
+        public byte[] GetAttributeAll(int classID)
         {
-            return this.GetAttributesAll(classID, 0);
+            return this.GetAttributeAll(classID, 0);
         }
 
         ObjectLibrary.IdentityObject identityObject;
@@ -693,6 +728,28 @@ namespace Sres.Net.EEIP
             }
         }
 
+
+
+        /// <summary>
+        /// Converts a bytearray (received e.g. via getAttributeSingle) to ushort
+        /// </summary>
+        /// <param name="byteArray">bytearray to convert</param> 
+        public static ushort toUshort(byte[] byteArray)
+        {
+            UInt16 returnValue;
+            returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Converts a bytearray (received e.g. via getAttributeSingle) to uint
+        /// </summary>
+        /// <param name="byteArray">bytearray to convert</param> 
+        public static uint toUint(byte[] byteArray)
+        {
+            UInt32 returnValue = ((UInt32)byteArray[3] << 24 | (UInt32)byteArray[2] << 16 | (UInt32)byteArray[1] << 8 | (UInt32)byteArray[0]);
+            return returnValue;
+        }
     }
 
     public enum ConnectionType : byte
@@ -709,6 +766,8 @@ namespace Sres.Net.EEIP
         Scheduled = 2,
         Urgent = 3
     }
+
+
 
 
 }

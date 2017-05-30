@@ -31,7 +31,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(2, 1, 1);
+                byte[] byteArray = eeipClient.GetAttributeSingle(2, 1, 1);
                 ObjectListStruct returnValue;
                 returnValue.Number = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.Classes = new UInt16[returnValue.Number];
@@ -50,7 +50,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(2, 2, 1);
+                byte[] byteArray = eeipClient.GetAttributeSingle(2, 2, 1);
                 UInt16 returnValue;
                 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
@@ -64,7 +64,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(2, 3, 1);
+                byte[] byteArray = eeipClient.GetAttributeSingle(2, 3, 1);
                 UInt16 returnValue;
                 returnValue = (UInt16)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
@@ -78,7 +78,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         {
             get
             {
-                byte[] byteArray = eeipClient.getAttributeSingle(2, 4, 1);
+                byte[] byteArray = eeipClient.GetAttributeSingle(2, 4, 1);
                 UInt16[] returnValue = new UInt16[byteArray.Length / 2];
                 for (int i = 0; i < returnValue.Length; i++)
                 {
