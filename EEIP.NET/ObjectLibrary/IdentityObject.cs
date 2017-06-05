@@ -13,7 +13,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
     /// This object provides identification of and general information about the device. The Identity Object shall be present in all CIP products.
     /// If autonomous components of a device exist, use multiple instances of the Identity Object.
     /// </remarks>
-    class IdentityObject
+    public class IdentityObject
     {
         public EEIPClient eeipClient;
 
@@ -196,6 +196,9 @@ namespace Sres.Net.EEIP.ObjectLibrary
             }
         }
 
+        /// <summary>
+        /// gets all class attributes
+        /// </summary>
         public ClassAttributesStruct ClassAttributes
         {
             get
@@ -210,6 +213,9 @@ namespace Sres.Net.EEIP.ObjectLibrary
             }
         }
 
+        /// <summary>
+        /// gets all instance attributes
+        /// </summary>
         public InstanceAttributesStruct InstanceAttributes
         {
             get
@@ -249,7 +255,5 @@ namespace Sres.Net.EEIP.ObjectLibrary
             public uint SerialNumber;
             public string ProductName;
         }
-
-
     }
 }

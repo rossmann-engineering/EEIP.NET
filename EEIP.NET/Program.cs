@@ -27,25 +27,30 @@ namespace ConsoleApplication1
 
 
 
-            UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.112", 0xAF12);
+            UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.66", 0xAF12);
             //            eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Null;
             //            eipClient.O_T_Length = 0;
             eipClient.O_T_InstanceID = 0x65;
-            eipClient.O_T_Length = 7;
+            eipClient.O_T_Length = 1;//7;
+            eipClient.O_T_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Header32Bit;
             eipClient.O_T_OwnerRedundant = false;
             eipClient.O_T_Priority = Sres.Net.EEIP.Priority.High;
             eipClient.O_T_VariableLength = false;
             eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Point_to_Point;
+            eipClient.RequestedPacketRate_O_T = 1000000;
             eipClient.T_O_InstanceID = 0x68;
-            eipClient.T_O_Length = 4;
+            eipClient.T_O_Length = 2;//4
+            eipClient.T_O_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Modeless;
             eipClient.T_O_OwnerRedundant = false;
             eipClient.T_O_Priority = Sres.Net.EEIP.Priority.High;
             eipClient.T_O_VariableLength = false;
             eipClient.T_O_ConnectionType = Sres.Net.EEIP.ConnectionType.Point_to_Point;
+            eipClient.RequestedPacketRate_T_O = 1000000;
+            eipClient.ForwardOpen();
 
-            //eipClient.ForwardOpen();
             //            eipClient.setAttributeSingle(0x4, 102, 3, new byte[] { 0xff});
-            //            Console.WriteLine(eipClient.AssemblyObject.getInstance(105));
+            Console.WriteLine("State of digital Input #1: "+(eipClient.AssemblyObject.getInstance(0x68)[0]));
+            Console.WriteLine("State of digital Input #1: " + eipClient.GetAttributeSingle (0x65, 2,1)[0]);
             Sres.Net.EEIP.ObjectLibrary.MessageRouterObject.ObjectListStruct objectList = eipClient.MessageRouterObject.ObjectList;
             Console.WriteLine("Number of supported objects: " + objectList.Number);
             for (int i = 0; i < objectList.Number; i++)
@@ -62,10 +67,28 @@ namespace ConsoleApplication1
             Console.WriteLine("Device Status: " + eipClient.IdentityObject.Status);
             Console.WriteLine("Serial Number: " + eipClient.IdentityObject.SerialNumber);
             Console.WriteLine("Product Name: " + eipClient.IdentityObject.ProductName);
-    //        eipClient.UnRegisterSession();
+            //      eipClient.UnRegisterSession();
             //Console.WriteLine("Revision: " + eipClient.IdentityObject.AllClassAttributes.Revision);
             //Console.WriteLine("State: " + eipClient.IdentityObject.State);
             //Console.WriteLine("supported language" + eipClient.IdentityObject.SupportedLanguageList[0]);
+
+            for (int i = 0; i < 3; i++ )
+            {
+                eipClient.O_T_IOData[0] = 1;
+                System.Threading.Thread.Sleep(1000);
+                eipClient.O_T_IOData[0] = 2;
+                System.Threading.Thread.Sleep(1000);
+                eipClient.O_T_IOData[0] = 3;
+                System.Threading.Thread.Sleep(1000);
+                eipClient.O_T_IOData[0] = 0;
+                System.Threading.Thread.Sleep(1000);
+
+
+            }
+            eipClient.ForwardClose();
+            System.Threading.Thread.Sleep(1000);
+            eipClient.ForwardOpen();
+
 
             Console.ReadKey();
         }

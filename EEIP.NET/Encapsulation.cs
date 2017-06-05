@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sres.Net.EEIP
 {
-    class Encapsulation
+    public class Encapsulation
     {
         public CommandsEnum Command { get; set; }
         public UInt16 Length { get; set; }

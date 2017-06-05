@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sres.Net.EEIP.ObjectLibrary
 {
-    class MessageRouterObject
+    public class MessageRouterObject
     {
         public EEIPClient eeipClient;
 
@@ -88,5 +88,6 @@ namespace Sres.Net.EEIP.ObjectLibrary
             
             }
         }
+
     }
 }

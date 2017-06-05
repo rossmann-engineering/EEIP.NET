@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sres.Net.EEIP.ObjectLibrary
 {
-    class AssemblyObject
+    public class AssemblyObject
     {
         public EEIPClient eeipClient;
 
@@ -28,7 +28,17 @@ namespace Sres.Net.EEIP.ObjectLibrary
             
                 byte[] byteArray = eeipClient.GetAttributeSingle(4, instanceNo, 3);
                 return byteArray;
-            
+        }
+
+        /// <summary>
+        /// Sets an Instance of the Assembly Object
+        /// </summary>
+        /// <param name="instanceNo"> Instance number to be returned</param>
+        /// <returns>bytes of the Instance</returns>
+        public void setInstance(int instanceNo, byte[] value)
+        {
+
+            eeipClient.SetAttributeSingle(4, instanceNo, 3, value);
         }
 
     }
