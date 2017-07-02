@@ -293,7 +293,7 @@ namespace Sres.Net.EEIP
             //----------------Originator Serial Number
 
             //----------------Timeout Multiplier
-            commonPacketFormat.Data.Add(0);
+            commonPacketFormat.Data.Add(3);
             //----------------Timeout Multiplier
 
             //----------------Reserved
@@ -372,31 +372,30 @@ namespace Sres.Net.EEIP
             encapsulation.toBytes();
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
-            byte[] data = new Byte[512];
+            byte[] data = new Byte[564];
 
             Int32 bytes = stream.Read(data, 0, data.Length);
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
             {
-                switch (data[42])
-                {
-                    
-                    case 0x1: if (data[43] == 0)
-                                throw new CIPException("Connection failure, General Status Code: " + data[42]);
-                            else
-                                throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45]<<8)|data[44]) + " " + ObjectLibrary.ConnectionManagerObject.GetExtendedStatus((uint)((data[45] << 8) | data[44])));
-                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
-                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
-                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
-
-                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
-                }
+                if (data[42] == 0x1)
+                    if (data[43] == 0)
+                        throw new CIPException("Connection failure, General Status Code: " + data[42]);
+                    else
+                        throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45] << 8) | data[44]) + " " + ObjectLibrary.ConnectionManagerObject.GetExtendedStatus((uint)((data[45] << 8) | data[44])));
+                else
+                    throw new CIPException(GeneralStatusCodes.GetStatusCode(data[42]));
             }
             //--------------------------END Error?
+            //Read the Network ID from the Reply (see 3-3.7.1.1)
+            this.connectionID_O_T = data[44] + (uint)(data[45] << 8) + (uint)(data[46] << 16) + (uint)(data[47] << 24);
+            this.connectionID_T_O = data[48] + (uint)(data[49] << 8) + (uint)(data[50] << 16) + (uint)(data[51] << 24);
+
             //Open UDP-Port
-            
+
+
+
             System.Net.IPEndPoint endPointReceive = new System.Net.IPEndPoint(System.Net.IPAddress.Any, UDPPort);
             udpClientReceive = new System.Net.Sockets.UdpClient(endPointReceive);
             UdpState s = new UdpState();
@@ -519,28 +518,14 @@ namespace Sres.Net.EEIP
             encapsulation.toBytes();
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
-            byte[] data = new Byte[512];
+            byte[] data = new Byte[564];
 
             Int32 bytes = stream.Read(data, 0, data.Length);
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
             {
-                switch (data[42])
-                {
-
-                    case 0x1:
-                        if (data[43] == 0)
-                            throw new CIPException("Connection failure, General Status Code: " + data[42]);
-                        else
-                            throw new CIPException("Connection failure, General Status Code: " + data[42] + " Additional Status Code: " + ((data[45] << 8) | data[44]) + " " + ObjectLibrary.ConnectionManagerObject.GetExtendedStatus((uint)((data[45] << 8) | data[44])));
-                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
-                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
-                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
-
-                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
-                }
+                throw new CIPException(GeneralStatusCodes.GetStatusCode(data[42]));
             }
 
 
@@ -554,7 +539,7 @@ namespace Sres.Net.EEIP
         }
 
         private bool stopUDP;
-        
+        int sequence = 0;
         private void sendUDP()
         {
             System.Net.Sockets.UdpClient udpClientsend = new System.Net.Sockets.UdpClient();
@@ -562,7 +547,7 @@ namespace Sres.Net.EEIP
             uint sequenceCount = 0;
             while (!stopUDP)
             {
-                byte[] o_t_IOData = new byte[523];
+                byte[] o_t_IOData = new byte[564];
                 System.Net.IPEndPoint endPointsend = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(IPAddress), UDPPort);
                
                 UdpState send = new UdpState();
@@ -615,10 +600,11 @@ namespace Sres.Net.EEIP
                 //---------------Length
 
                 //---------------Sequence count
+                sequence++;
                 if (O_T_RealTimeFormat != RealTimeFormat.Heartbeat)
                 {
-                    o_t_IOData[18] = (byte)1;
-                    o_t_IOData[19] = (byte)0;
+                    o_t_IOData[18] = (byte)sequence;
+                    o_t_IOData[19] = (byte)(sequence >> 8);
                 }
                 //---------------Sequence count
 
@@ -633,7 +619,7 @@ namespace Sres.Net.EEIP
 
                     //---------------Write data
                     for ( int i = 0; i < O_T_Length; i++)
-                    o_t_IOData[20+headerOffset+i] = (byte)O_T_IOData[i];
+                        o_t_IOData[20+headerOffset+i] = (byte)O_T_IOData[i];
                 //---------------Write data
 
 
@@ -649,8 +635,7 @@ namespace Sres.Net.EEIP
         }
 
         private void ReceiveCallbackClass1(IAsyncResult ar)
-        {
-            
+        {          
             UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
             if (udpClientReceiveClosed)
                 return;
@@ -676,7 +661,7 @@ namespace Sres.Net.EEIP
                         headerOffset = 4;
                     if (T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
                         headerOffset = 0;
-                    for (int i = 0; i < T_O_Length; i++)
+                    for (int i = 0; i < receiveBytes.Length-20-headerOffset; i++)
                     {
                         T_O_IOData[i] = receiveBytes[20 + i + headerOffset];
                     }
@@ -786,22 +771,14 @@ namespace Sres.Net.EEIP
             encapsulation.toBytes();
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
-            byte[] data = new Byte[256];
+            byte[] data = new Byte[564];
 
             Int32 bytes = stream.Read(data, 0, data.Length);
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
             {
-                switch (data[42])
-                {
-                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
-                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
-                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
-                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
-                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]); 
-                }
+                throw new CIPException(GeneralStatusCodes.GetStatusCode(data[42]));
             }
             //--------------------------END Error?
 
@@ -875,21 +852,13 @@ namespace Sres.Net.EEIP
            
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
-            byte[] data = new Byte[256];
+            byte[] data = new Byte[564];
 
             Int32 bytes = stream.Read(data, 0, data.Length);
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
             {
-                switch (data[42])
-                {
-                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
-                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
-                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
-                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
-                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
-                }
+                throw new CIPException(GeneralStatusCodes.GetStatusCode(data[42]));
             }
             //--------------------------END Error?
 
@@ -968,23 +937,14 @@ namespace Sres.Net.EEIP
             encapsulation.toBytes();
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
-            byte[] data = new Byte[256];
+            byte[] data = new Byte[564];
 
             Int32 bytes = stream.Read(data, 0, data.Length);
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
             {
-                switch (data[42])
-                {
-                    case 0x1: throw new CIPException("Connection failure, General Status Code: " + data[42]);
-                    case 0x14: throw new CIPException("CIP-Exception: Attribute not supported, General Status Code: " + data[42]);
-                    case 0x5: throw new CIPException("CIP-Exception: Path destination unknown, General Status Code: " + data[42]);
-                    case 0x16: throw new CIPException("CIP-Exception: Object does not exist: " + data[42]);
-                    case 0x15: throw new CIPException("CIP-Exception: Too much data: " + data[42]);
-
-                    default: throw new CIPException("CIP-Exception, General Status Code: " + data[42]);
-                }
+                throw new CIPException(GeneralStatusCodes.GetStatusCode(data[42]));
             }
             //--------------------------END Error?
 
@@ -1004,6 +964,9 @@ namespace Sres.Net.EEIP
         }
 
         ObjectLibrary.IdentityObject identityObject;
+        /// <summary>
+        /// Implementation of the identity Object (Class Code: 0x01) - Required Object according to CIP-Specification
+        /// </summary>
         public ObjectLibrary.IdentityObject IdentityObject
         {
             get
@@ -1016,6 +979,9 @@ namespace Sres.Net.EEIP
         }
 
         ObjectLibrary.MessageRouterObject messageRouterObject;
+        /// <summary>
+        /// Implementation of the Message Router Object (Class Code: 0x02) - Required Object according to CIP-Specification
+        /// </summary>
         public ObjectLibrary.MessageRouterObject MessageRouterObject
         {
             get
@@ -1028,6 +994,9 @@ namespace Sres.Net.EEIP
         }
 
         ObjectLibrary.AssemblyObject assemblyObject;
+        /// <summary>
+        /// Implementation of the Assembly Object (Class Code: 0x04)
+        /// </summary>
         public ObjectLibrary.AssemblyObject AssemblyObject
         {
             get
@@ -1035,11 +1004,23 @@ namespace Sres.Net.EEIP
                 if (assemblyObject == null)
                     assemblyObject = new ObjectLibrary.AssemblyObject(this);
                 return assemblyObject;
-
             }
         }
 
+        ObjectLibrary.TcpIpInterfaceObject tcpIpInterfaceObject;
+        /// <summary>
+        /// Implementation of the TCP/IP Object (Class Code: 0xF5) - Required Object according to CIP-Specification
+        /// </summary>
+        public ObjectLibrary.TcpIpInterfaceObject TcpIpInterfaceObject
+        {
+            get
+            {
+                if (tcpIpInterfaceObject == null)
+                    tcpIpInterfaceObject = new ObjectLibrary.TcpIpInterfaceObject(this);
+                return tcpIpInterfaceObject;
 
+            }
+        }
 
         /// <summary>
         /// Converts a bytearray (received e.g. via getAttributeSingle) to ushort

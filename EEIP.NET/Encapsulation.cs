@@ -31,6 +31,10 @@ namespace Sres.Net.EEIP
             UnsupportedEncapsulationProtocol = 0x0069
         }
 
+
+
+
+
         /// <summary>
         /// Table 2-3.2 Encapsulation Commands
         /// </summary>
