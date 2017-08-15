@@ -49,7 +49,7 @@ namespace ConsoleApplication1
             }
             eipClient.O_T_IOData[503] = 3;
             Console.ReadKey();
-            Console.WriteLine("State if Digitalinput 1: " + eipClient.T_O_IOData[0]);
+            Console.WriteLine("State of Digitalinput 1: " + eipClient.T_O_IOData[0]);
             eipClient.ForwardClose();
             System.Threading.Thread.Sleep(1000);
      
