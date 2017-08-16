@@ -16,27 +16,104 @@ namespace Sres.Net.EEIP
         UInt32 connectionID_O_T;
         UInt32 connectionID_T_O;
         UInt16 connectionSerialNumber;
+        /// <summary>
+        /// TCP-Port of the Server
+        /// </summary>
         public ushort TCPPort { get; set; } = 0xAF12;
+        /// <summary>
+        /// UDP-Port of the IO-Adapter
+        /// </summary>
         public ushort UDPPort { get; set; } = 0x08AE;
+        /// <summary>
+        /// IPAddress of the Ethernet/IP Device
+        /// </summary>
         public string IPAddress { get; set; } = "172.0.0.1";
+        /// <summary>
+        /// Requested Packet Rate (RPI) in Microseconds Originator -> Target for Implicit-Messaging (Default 0x7A120 -> 500ms)
+        /// </summary>
         public UInt32 RequestedPacketRate_O_T { get; set; } = 0x7A120;      //500ms
+        /// <summary>
+        /// Requested Packet Rate (RPI) in Microseconds Target -> Originator for Implicit-Messaging (Default 0x7A120 -> 500ms)
+        /// </summary>
         public UInt32 RequestedPacketRate_T_O { get; set; } = 0x7A120;      //500ms
+        /// <summary>
+        /// "1" Indicates that multiple connections are allowed Originator -> Target for Implicit-Messaging (Default: TRUE) 
+        /// </summary>
         public bool O_T_OwnerRedundant { get; set; } = true;                //For Forward Open
+        /// <summary>
+        /// "1" Indicates that multiple connections are allowed Target -> Originator for Implicit-Messaging (Default: TRUE) 
+        /// </summary>
         public bool T_O_OwnerRedundant { get; set; } = true;                //For Forward Open
+        /// <summary>
+        /// With a fixed size connection, the amount of data shall be the size of specified in the "Connection Size" Parameter.
+        /// With a variable size, the amount of data could be up to the size specified in the "Connection Size" Parameter
+        /// Originator -> Target for Implicit Messaging (Default: True (Variable length))
+        /// </summary>
         public bool O_T_VariableLength { get; set; } = true;                //For Forward Open
+        /// <summary>
+        /// With a fixed size connection, the amount of data shall be the size of specified in the "Connection Size" Parameter.
+        /// With a variable size, the amount of data could be up to the size specified in the "Connection Size" Parameter
+        /// Target -> Originator for Implicit Messaging (Default: True (Variable length))
+        /// </summary>
         public bool T_O_VariableLength { get; set; } = true;                //For Forward Open
+        /// <summary>
+        /// The maximum size in bytes including sequence count and 32-Bit Real Time Header (if present) from Originator -> Target for Implicit Messaging (Default: 505)
+        /// </summary>
         public UInt16 O_T_Length { get; set; } = 505;                //For Forward Open - Max 505
+        /// <summary>
+        /// The maximum size in bytes including sequence count and 32-Bit Real Time Header (if present) from Target -> Originator for Implicit Messaging (Default: 505)
+        /// </summary>
         public UInt16 T_O_Length { get; set; } = 505;                //For Forward Open - Max 505
+        /// <summary>
+        /// Connection Type Originator -> Target for Implicit Messaging (Default: ConnectionType.Point_to_Point)
+        /// </summary>
         public ConnectionType O_T_ConnectionType { get; set; } = ConnectionType.Point_to_Point;
+        /// <summary>
+        /// Connection Type Target -> Originator for Implicit Messaging (Default: ConnectionType.Multicast)
+        /// </summary>
         public ConnectionType T_O_ConnectionType { get; set; } = ConnectionType.Multicast;
+        /// <summary>
+        /// Priority Originator -> Target for Implicit Messaging (Default: Priority.Scheduled)
+        /// Could be: Priority.Scheduled; Priority.High; Priority.Low; Priority.Urgent
+        /// </summary>
         public Priority O_T_Priority { get; set; } = Priority.Scheduled;
+        /// <summary>
+        /// Priority Target -> Originator for Implicit Messaging (Default: Priority.Scheduled)
+        /// Could be: Priority.Scheduled; Priority.High; Priority.Low; Priority.Urgent
+        /// </summary>
         public Priority T_O_Priority { get; set; } = Priority.Scheduled;
+        /// <summary>
+        /// Class Assembly (Consuming IO-Path - Outputs) Originator -> Target for Implicit Messaging (Default: 0x64)
+        /// </summary>
         public byte O_T_InstanceID { get; set; } = 0x64;               //Ausgänge
+        /// <summary>
+        /// Class Assembly (Producing IO-Path - Inputs) Target -> Originator for Implicit Messaging (Default: 0x64)
+        /// </summary>
         public byte T_O_InstanceID { get; set; } = 0x65;               //Eingänge
+        /// <summary>
+        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
+        /// </summary>
         public byte[] O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T   
+        /// <summary>
+        /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
+        /// </summary>
         public byte[] T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O  
+        /// <summary>
+        /// Used Real-Time Format Originator -> Target for Implicit Messaging (Default: RealTimeFormat.Header32Bit)
+        /// Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
+        /// </summary>
         public RealTimeFormat O_T_RealTimeFormat { get; set; } = RealTimeFormat.Header32Bit;
+        /// <summary>
+        /// Used Real-Time Format Target -> Originator for Implicit Messaging (Default: RealTimeFormat.Modeless)
+        /// Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
+        /// </summary>
         public RealTimeFormat T_O_RealTimeFormat { get; set; } = RealTimeFormat.Modeless;
+        /// <summary>
+        /// AssemblyObject for the Configuration Path in case of Implicit Messaging (Standard: 0x04)
+        /// </summary>
+        public byte AssemblyObjectClass { get; set; } = 0x04;
+
+
 
         private void ReceiveCallback(IAsyncResult ar)
         {
@@ -350,7 +427,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add((byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1) ));
             //Verbindugspfad
             commonPacketFormat.Data.Add((byte)(0x20));
-            commonPacketFormat.Data.Add((byte)(0x4));
+            commonPacketFormat.Data.Add((byte)(AssemblyObjectClass));
             commonPacketFormat.Data.Add((byte)(0x24));
             commonPacketFormat.Data.Add((byte)(0x01));
             if (O_T_ConnectionType != ConnectionType.Null)
@@ -1081,8 +1158,4 @@ namespace Sres.Net.EEIP
 
         
     }
-
-
-
-
 }
