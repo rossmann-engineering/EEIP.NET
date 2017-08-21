@@ -177,13 +177,17 @@ namespace Sres.Net.EEIP
             public UInt16 AddressLength = 0;
             public UInt16 DataItem = 0xB2; //0xB2 = Unconnected Data Item
             public UInt16 DataLength = 8;
-
             public List<byte> Data = new List<byte>();
+            public UInt16 SockaddrInfoItem_O_T = 0x8001; //8000 for O->T and 8001 for T->O - Volume 2 Table 2-6.9
+            public UInt16 SockaddrInfoLength = 16;
+            public SocketAddress SocketaddrInfo_O_T = null;
 
 
             public byte[] toBytes()
             {
-                byte[] returnValue = new byte[10 + Data.Count];
+                if (SocketaddrInfo_O_T != null)
+                    ItemCount=3;
+                byte[] returnValue = new byte[10 + Data.Count + (SocketaddrInfo_O_T == null ? 0 : 20)];
                 returnValue[0] = (byte)this.ItemCount;
                 returnValue[1] = (byte)((UInt16)this.ItemCount >> 8);
                 returnValue[2] = (byte)this.AddressItem;
@@ -198,7 +202,33 @@ namespace Sres.Net.EEIP
                 {
                     returnValue[10 + i] = Data[i];
                 }
-                return returnValue;
+
+
+                // Add Socket Address Info Item
+                if (SocketaddrInfo_O_T != null)
+                {
+                    returnValue[10 + Data.Count + 0] = (byte)this.SockaddrInfoItem_O_T;
+                    returnValue[10 + Data.Count + 1] = (byte)((UInt16)this.SockaddrInfoItem_O_T >> 8);
+                    returnValue[10 + Data.Count + 2] = (byte)this.SockaddrInfoLength;
+                    returnValue[10 + Data.Count + 3] = (byte)((UInt16)this.SockaddrInfoLength >> 8);
+                    returnValue[10 + Data.Count + 5] = (byte)this.SocketaddrInfo_O_T.SIN_family;
+                    returnValue[10 + Data.Count + 4] = (byte)((UInt16)this.SocketaddrInfo_O_T.SIN_family >> 8);
+                    returnValue[10 + Data.Count + 7] = (byte)this.SocketaddrInfo_O_T.SIN_port;
+                    returnValue[10 + Data.Count + 6] = (byte)((UInt16)this.SocketaddrInfo_O_T.SIN_port >> 8);
+                    returnValue[10 + Data.Count + 11] = (byte)this.SocketaddrInfo_O_T.SIN_Address;
+                    returnValue[10 + Data.Count + 10] = (byte)((UInt32)this.SocketaddrInfo_O_T.SIN_Address >> 8);
+                    returnValue[10 + Data.Count + 9] = (byte)((UInt32)this.SocketaddrInfo_O_T.SIN_Address >> 16);
+                    returnValue[10 + Data.Count + 8] = (byte)((UInt32)this.SocketaddrInfo_O_T.SIN_Address >> 24);
+                    returnValue[10 + Data.Count + 12] = this.SocketaddrInfo_O_T.SIN_Zero[0];
+                    returnValue[10 + Data.Count + 13] = this.SocketaddrInfo_O_T.SIN_Zero[1];
+                    returnValue[10 + Data.Count + 14] = this.SocketaddrInfo_O_T.SIN_Zero[2];
+                    returnValue[10 + Data.Count + 15] = this.SocketaddrInfo_O_T.SIN_Zero[3];
+                    returnValue[10 + Data.Count + 16] = this.SocketaddrInfo_O_T.SIN_Zero[4];
+                    returnValue[10 + Data.Count + 17] = this.SocketaddrInfo_O_T.SIN_Zero[5];
+                    returnValue[10 + Data.Count + 18] = this.SocketaddrInfo_O_T.SIN_Zero[6];
+                    returnValue[10 + Data.Count + 19] = this.SocketaddrInfo_O_T.SIN_Zero[7];
+                }
+                    return returnValue;
             }
         }
     }
