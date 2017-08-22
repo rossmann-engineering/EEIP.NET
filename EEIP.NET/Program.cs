@@ -29,7 +29,7 @@ namespace ConsoleApplication1
             eipClient.T_O_InstanceID = 104;
             eipClient.T_O_Length = 3;
             eipClient.T_O_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Modeless;
-            eipClient.T_O_OwnerRedundant = false;
+            eipClient.T_O_OwnerRedundant = true;
             eipClient.T_O_Priority = Sres.Net.EEIP.Priority.High;
             eipClient.T_O_VariableLength = false;
             eipClient.T_O_ConnectionType = Sres.Net.EEIP.ConnectionType.Multicast;

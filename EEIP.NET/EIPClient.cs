@@ -15,18 +15,24 @@ namespace Sres.Net.EEIP
         UInt32 sessionHandle;
         UInt32 connectionID_O_T;
         UInt32 connectionID_T_O;
+        UInt32 multicastAddress;
         UInt16 connectionSerialNumber;
         /// <summary>
         /// TCP-Port of the Server
         /// </summary>
         public ushort TCPPort { get; set; } = 0xAF12;
         /// <summary>
-        /// UDP-Port of the IO-Adapter
+        /// UDP-Port of the IO-Adapter - Standard is 0xAF12
         /// </summary>
-        public ushort UDPPort { get; set; } = 0x08AE;
+        public ushort TargetUDPPort { get; set; } = 0x08AE;
+        /// <summary>
+        /// UDP-Port of the Scanner - Standard is 0xAF12
+        /// </summary>
+        public ushort OriginatorUDPPort { get; set; } = 0x08AE;
         /// <summary>
         /// IPAddress of the Ethernet/IP Device
         /// </summary>
+        /// 
         public string IPAddress { get; set; } = "172.0.0.1";
         /// <summary>
         /// Requested Packet Rate (RPI) in Microseconds Originator -> Target for Implicit-Messaging (Default 0x7A120 -> 500ms)
@@ -57,11 +63,11 @@ namespace Sres.Net.EEIP
         /// </summary>
         public bool T_O_VariableLength { get; set; } = true;                //For Forward Open
         /// <summary>
-        /// The maximum size in bytes including sequence count and 32-Bit Real Time Header (if present) from Originator -> Target for Implicit Messaging (Default: 505)
+        /// The maximum size in bytes (only pure data without sequence count and 32-Bit Real Time Header (if present)) from Originator -> Target for Implicit Messaging (Default: 505)
         /// </summary>
         public UInt16 O_T_Length { get; set; } = 505;                //For Forward Open - Max 505
         /// <summary>
-        /// The maximum size in bytes including sequence count and 32-Bit Real Time Header (if present) from Target -> Originator for Implicit Messaging (Default: 505)
+        /// The maximum size in bytes (only pure data woithout sequence count and 32-Bit Real Time Header (if present)) from Target -> Originator for Implicit Messaging (Default: 505)
         /// </summary>
         public UInt16 T_O_Length { get; set; } = 505;                //For Forward Open - Max 505
         /// <summary>
@@ -288,7 +294,8 @@ namespace Sres.Net.EEIP
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
-            encapsulation.Length = (ushort)(57 + (ushort)lengthOffset);
+            //!!!!!!-----Length Field at the end!!!!!!!!!!!!!
+            
             //---------------Interface Handle CIP
             encapsulation.CommandSpecificData.Add(0);
             encapsulation.CommandSpecificData.Add(0);
@@ -440,14 +447,31 @@ namespace Sres.Net.EEIP
                 commonPacketFormat.Data.Add((byte)(0x2C));
                 commonPacketFormat.Data.Add((byte)(T_O_InstanceID));
             }
+            
+            //AddSocket Addrress Item O->T
 
+                commonPacketFormat.SocketaddrInfo_O_T = new Encapsulation.SocketAddress();
+                commonPacketFormat.SocketaddrInfo_O_T.SIN_port = OriginatorUDPPort;
+                commonPacketFormat.SocketaddrInfo_O_T.SIN_family = 2;
+            if (O_T_ConnectionType == ConnectionType.Multicast)
+            {
+                UInt32 multicastResponseAddress = EEIPClient.GetMulticastAddress(BitConverter.ToUInt32(System.Net.IPAddress.Parse(IPAddress).GetAddressBytes(), 0));
+
+                commonPacketFormat.SocketaddrInfo_O_T.SIN_Address = (multicastResponseAddress);
+
+                multicastAddress = commonPacketFormat.SocketaddrInfo_O_T.SIN_Address;
+            }
+            else
+                commonPacketFormat.SocketaddrInfo_O_T.SIN_Address = 0;
+
+            encapsulation.Length = (ushort)(commonPacketFormat.toBytes().Length+6);//(ushort)(57 + (ushort)lengthOffset);
             //20 04 24 01 2C 65 2C 6B
 
             byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
             System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
-            encapsulation.toBytes();
-
+            //encapsulation.toBytes();
+            
             stream.Write(dataToWrite, 0, dataToWrite.Length);
             byte[] data = new Byte[564];
 
@@ -466,23 +490,73 @@ namespace Sres.Net.EEIP
             }
             //--------------------------END Error?
             //Read the Network ID from the Reply (see 3-3.7.1.1)
+            int itemCount = data[30] + (data[31] << 8);
+            int lengthUnconectedDataItem = data[38] + (data[39] << 8);
             this.connectionID_O_T = data[44] + (uint)(data[45] << 8) + (uint)(data[46] << 16) + (uint)(data[47] << 24);
             this.connectionID_T_O = data[48] + (uint)(data[49] << 8) + (uint)(data[50] << 16) + (uint)(data[51] << 24);
 
+            //Is a SocketInfoItem present?
+            int numberOfCurrentItem = 0;
+            Encapsulation.SocketAddress socketInfoItem;
+            while (itemCount > 2)
+            {
+                int typeID = data[40 + lengthUnconectedDataItem+ 20 * numberOfCurrentItem] + (data[40 + lengthUnconectedDataItem + 1+ 20 * numberOfCurrentItem] << 8);
+                if (typeID == 0x8001)
+                {
+                    socketInfoItem = new Encapsulation.SocketAddress();
+                    socketInfoItem.SIN_Address = (UInt32)(data[40 + lengthUnconectedDataItem + 8 + 20 * numberOfCurrentItem]) + (UInt32)(data[40 + lengthUnconectedDataItem + 9 + 20 * numberOfCurrentItem] << 8) + (UInt32)(data[40 + lengthUnconectedDataItem + 10 + 20 * numberOfCurrentItem] << 16) + (UInt32)(data[40 + lengthUnconectedDataItem + 11 + 20 * numberOfCurrentItem] << 24);
+                    socketInfoItem.SIN_port = (UInt16)((UInt16)(data[40 + lengthUnconectedDataItem + 7 + 20 * numberOfCurrentItem]) + (UInt16)(data[40 + lengthUnconectedDataItem + 6 + 20 * numberOfCurrentItem] << 8));
+                    if (T_O_ConnectionType == ConnectionType.Multicast)
+                        multicastAddress = socketInfoItem.SIN_Address;
+                    TargetUDPPort = socketInfoItem.SIN_port;
+                }
+                numberOfCurrentItem++;
+                itemCount--;
+            }
             //Open UDP-Port
 
 
 
-            System.Net.IPEndPoint endPointReceive = new System.Net.IPEndPoint(System.Net.IPAddress.Any, UDPPort);
+            System.Net.IPEndPoint endPointReceive = new System.Net.IPEndPoint(System.Net.IPAddress.Any, OriginatorUDPPort);
             udpClientReceive = new System.Net.Sockets.UdpClient(endPointReceive);
             UdpState s = new UdpState();
             s.e = endPointReceive;
             s.u = udpClientReceive;
+            if (multicastAddress != 0)
+            {
+                System.Net.IPAddress multicast = (new System.Net.IPAddress(multicastAddress));
+                udpClientReceive.JoinMulticastGroup(multicast);
+              
+            }
 
             System.Threading.Thread sendThread = new System.Threading.Thread(sendUDP);
             sendThread.Start();
 
             var asyncResult = udpClientReceive.BeginReceive(new AsyncCallback(ReceiveCallbackClass1), s);
+        }
+
+        private static UInt32 GetMulticastAddress(UInt32 deviceIPAddress)
+        {
+            UInt32 cip_Mcast_Base_Addr = 0xEFC00100;
+            UInt32 cip_Host_Mask = 0x3FF;
+            UInt32 netmask = 0;
+
+            //Class A Network?
+            if (deviceIPAddress <= 0x7FFFFFFF)
+                netmask = 0xFF000000;
+            //Class B Network?
+            if (deviceIPAddress >= 0x80000000 && deviceIPAddress <= 0xBFFFFFFF)
+                netmask = 0xFFFF0000;
+            //Class C Network?
+            if (deviceIPAddress >= 0xC0000000 && deviceIPAddress <= 0xDFFFFFFF)
+                netmask = 0xFFFFFF00;
+
+            UInt32 hostID = deviceIPAddress & ~netmask;
+            UInt32 mcastIndex = hostID - 1;
+            mcastIndex = mcastIndex & cip_Host_Mask;
+
+            return (UInt32) (cip_Mcast_Base_Addr + mcastIndex * (UInt32)32);
+
         }
 
         public void ForwardClose()
@@ -622,10 +696,12 @@ namespace Sres.Net.EEIP
             System.Net.Sockets.UdpClient udpClientsend = new System.Net.Sockets.UdpClient();
             stopUDP = false;
             uint sequenceCount = 0;
+
+
             while (!stopUDP)
             {
                 byte[] o_t_IOData = new byte[564];
-                System.Net.IPEndPoint endPointsend = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(IPAddress), UDPPort);
+                System.Net.IPEndPoint endPointsend = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(IPAddress), TargetUDPPort);
                
                 UdpState send = new UdpState();
                  
@@ -742,7 +818,7 @@ namespace Sres.Net.EEIP
                     {
                         T_O_IOData[i] = receiveBytes[20 + i + headerOffset];
                     }
-                    Console.WriteLine(T_O_IOData[0]);
+                    //Console.WriteLine(T_O_IOData[0]);
 
 
                 }
