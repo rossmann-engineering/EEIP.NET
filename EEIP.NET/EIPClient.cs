@@ -118,7 +118,11 @@ namespace Sres.Net.EEIP
         /// AssemblyObject for the Configuration Path in case of Implicit Messaging (Standard: 0x04)
         /// </summary>
         public byte AssemblyObjectClass { get; set; } = 0x04;
-
+        /// <summary>
+        /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
+        /// Could be used to determine a Timeout
+        /// </summary>        
+        public DateTime LastReceivedImplicitMessage { get; set; }
 
 
         private void ReceiveCallback(IAsyncResult ar)
@@ -231,6 +235,8 @@ namespace Sres.Net.EEIP
         /// <returns>Session Handle</returns>	
         public UInt32 RegisterSession(UInt32 address, UInt16 port)
         {
+            if (sessionHandle != 0)
+                return sessionHandle;
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.Command = Encapsulation.CommandsEnum.RegisterSession;
             encapsulation.Length = 4;
@@ -449,7 +455,7 @@ namespace Sres.Net.EEIP
             }
             
             //AddSocket Addrress Item O->T
-
+            
                 commonPacketFormat.SocketaddrInfo_O_T = new Encapsulation.SocketAddress();
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_port = OriginatorUDPPort;
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_family = 2;
@@ -533,6 +539,44 @@ namespace Sres.Net.EEIP
             sendThread.Start();
 
             var asyncResult = udpClientReceive.BeginReceive(new AsyncCallback(ReceiveCallbackClass1), s);
+        }
+
+        private ushort o_t_detectedLength;
+        /// <summary>
+        /// Detects the Length of the data Originator -> Target.
+        /// The Method uses an Explicit Message to detect the length.
+        /// The IP-Address, Port and the Instance ID has to be defined before
+        /// </summary>
+        public ushort Detect_O_T_Length ()
+        {
+            if (o_t_detectedLength == 0)
+            {
+                if (this.sessionHandle == 0)
+                    this.RegisterSession();
+                o_t_detectedLength = (ushort)(this.GetAttributeSingle(0x04, O_T_InstanceID, 3)).Length;
+                return o_t_detectedLength;
+            }
+            else
+                return o_t_detectedLength;
+        }
+
+        private ushort t_o_detectedLength;
+        /// <summary>
+        /// Detects the Length of the data Target -> Originator.
+        /// The Method uses an Explicit Message to detect the length.
+        /// The IP-Address, Port and the Instance ID has to be defined before
+        /// </summary>
+        public ushort Detect_T_O_Length()
+        {
+            if (t_o_detectedLength == 0)
+            {
+                if (this.sessionHandle == 0)
+                    this.RegisterSession();
+                t_o_detectedLength = (ushort)(this.GetAttributeSingle(0x04, T_O_InstanceID, 3)).Length;
+                return t_o_detectedLength;
+            }
+            else
+                return t_o_detectedLength;
         }
 
         private static UInt32 GetMulticastAddress(UInt32 deviceIPAddress)
@@ -823,6 +867,7 @@ namespace Sres.Net.EEIP
 
                 }
             }
+            LastReceivedImplicitMessage = DateTime.Now;
         }
 
 
