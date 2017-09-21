@@ -18,13 +18,13 @@ namespace ConsoleApplication1
             EEIPClient eeipClient = new EEIPClient();
             eeipClient.IPAddress = "192.168.178.107";
             eeipClient.RegisterSession();
-            Console.WriteLine("Product Name: " + eeipClient.IdentityObject.ProductName);
-            Console.WriteLine("Product Code: " + eeipClient.IdentityObject.ProductCode);
-            byte[] data =eeipClient.GetAttributeSingle(0x4, 0x65,3);
-            for (int i = 0; i < data.Length; i++)
-                Console.WriteLine(data[i]);
-            Console.ReadKey();
-            UInt32 sessionHandle = eeipClient.RegisterSession("192.168.178.107", 0xAF12);
+            //Console.WriteLine("Product Name: " + eeipClient.IdentityObject.ProductName);
+            //Console.WriteLine("Product Code: " + eeipClient.IdentityObject.ProductCode);
+            //byte[] data =eeipClient.GetAttributeSingle(0x4, 0x65,3);
+            //for (int i = 0; i < data.Length; i++)
+            //    Console.WriteLine(data[i]);
+            //Console.ReadKey();
+            //UInt32 sessionHandle = eeipClient.RegisterSession("192.168.178.107", 0xAF12);
             //            eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Null;
             //            eipClient.O_T_Length = 0;
 

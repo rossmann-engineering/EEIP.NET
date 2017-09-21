@@ -127,23 +127,26 @@ namespace Sres.Net.EEIP
 
         private void ReceiveCallback(IAsyncResult ar)
         {
-            
-            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-            var asyncResult = u.BeginReceive(new AsyncCallback(ReceiveCallback), (UdpState)(ar.AsyncState));
-            System.Net.IPEndPoint e = (System.Net.IPEndPoint)((UdpState)(ar.AsyncState)).e;
-
-            Byte[] receiveBytes = u.EndReceive(ar, ref e);
-            string receiveString = Encoding.ASCII.GetString(receiveBytes);
-
-            // EndReceive worked and we have received data and remote endpoint
-            if (receiveBytes.Length > 0)
+            lock (this)
             {
-                UInt16 command = Convert.ToUInt16(receiveBytes[0]
-                                            | (receiveBytes[1] << 8));
-                if (command == 0x63)
+                UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+                
+                System.Net.IPEndPoint e = (System.Net.IPEndPoint)((UdpState)(ar.AsyncState)).e;
+
+                Byte[] receiveBytes = u.EndReceive(ar, ref e);
+                string receiveString = Encoding.ASCII.GetString(receiveBytes);
+
+                // EndReceive worked and we have received data and remote endpoint
+                if (receiveBytes.Length > 0)
                 {
-                    returnList.Add(Encapsulation.CIPIdentityItem.getCIPIdentityItem(24, receiveBytes));
+                    UInt16 command = Convert.ToUInt16(receiveBytes[0]
+                                                | (receiveBytes[1] << 8));
+                    if (command == 0x63)
+                    {
+                        returnList.Add(Encapsulation.CIPIdentityItem.getCIPIdentityItem(24, receiveBytes));
+                    }
                 }
+                var asyncResult = u.BeginReceive(new AsyncCallback(ReceiveCallback), (UdpState)(ar.AsyncState));
             }
 
         }
