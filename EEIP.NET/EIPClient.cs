@@ -192,37 +192,6 @@ namespace Sres.Net.EEIP
                             var asyncResult = udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
 
                             System.Threading.Thread.Sleep(1000);
-                            
-                            /*asyncResult.AsyncWaitHandle.WaitOne(2000);
-
-                            while (true)
-                            {
-                                if (asyncResult.IsCompleted)
-                                {
-                                    try
-                                    {
-                                        System.Net.IPEndPoint remoteEP = null;
-                                        byte[] receivedData = udpClient.EndReceive(asyncResult, ref remoteEP);
-                                        // EndReceive worked and we have received data and remote endpoint
-                                        if (receivedData.Length > 0)
-                                        {
-                                            UInt16 command = Convert.ToUInt16(receivedData[0]
-                                                                        | (receivedData[1] << 8));
-                                            if (command == 0x63)
-                                            {
-                                                returnList.Add(Encapsulation.CIPIdentityItem.getCIPIdentityItem(24, receivedData));
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        break;
-                                    }
-                                }
-                                else
-                                    break;
-                            }*/
-
                         }
                     }
                 }
@@ -696,7 +665,7 @@ namespace Sres.Net.EEIP
 
             //Verbindugspfad
             commonPacketFormat.Data.Add((byte)(0x20));
-            commonPacketFormat.Data.Add((byte)(0x4));
+            commonPacketFormat.Data.Add(AssemblyObjectClass);
             commonPacketFormat.Data.Add((byte)(0x24));
             commonPacketFormat.Data.Add((byte)(0x01));
             if (O_T_ConnectionType != ConnectionType.Null)
@@ -912,13 +881,14 @@ namespace Sres.Net.EEIP
 
         public byte[] GetAttributeSingle(int classID, int instanceID, int attributeID)
         {
+            byte[] requestedPath = GetEPath(classID, instanceID, attributeID);
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[48];
+            byte[] dataToSend = new byte[42+ requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
-            encapsulation.Length = 24;
+            encapsulation.Length = (UInt16)(18 + requestedPath.Length);
             //---------------Interface Handle CIP
             encapsulation.CommandSpecificData.Add(0);
             encapsulation.CommandSpecificData.Add(0);
@@ -947,24 +917,23 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Get_Attribute_Single);
             //----------------CIP Command "Get Attribute Single"
 
-            //----------------Requested Path size
-            commonPacketFormat.Data.Add(3);
-            //----------------Requested Path size
+            //----------------Requested Path size (number of 16 bit words)
+            commonPacketFormat.Data.Add((byte)(requestedPath.Length / 2));
+            //----------------Requested Path size (number of 16 bit words)
 
             //----------------Path segment for Class ID
-            commonPacketFormat.Data.Add(0x20);
-            commonPacketFormat.Data.Add((byte)classID);
             //----------------Path segment for Class ID
 
             //----------------Path segment for Instance ID
-            commonPacketFormat.Data.Add(0x24);
-            commonPacketFormat.Data.Add((byte)instanceID);
             //----------------Path segment for Instace ID
 
             //----------------Path segment for Attribute ID
-            commonPacketFormat.Data.Add(0x30);
-            commonPacketFormat.Data.Add((byte)attributeID);
             //----------------Path segment for Attribute ID
+
+            for (int i = 0; i < requestedPath.Length; i++)
+            {
+                commonPacketFormat.Data.Add(requestedPath[i]);
+            }
 
             byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
@@ -997,13 +966,14 @@ namespace Sres.Net.EEIP
         /// <returns>Session Handle</returns>	
         public byte[] GetAttributeAll(int classID, int instanceID)
         {
+            byte[] requestedPath = GetEPath(classID, instanceID, 0);
             if (sessionHandle == 0)             //If a Session is not Registered, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[46];
+            byte[] dataToSend = new byte[42 + requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
-            encapsulation.Length = 22;
+            encapsulation.Length = (UInt16)(18 + requestedPath.Length);
             //---------------Interface Handle CIP
             encapsulation.CommandSpecificData.Add(0);
             encapsulation.CommandSpecificData.Add(0);
@@ -1033,19 +1003,18 @@ namespace Sres.Net.EEIP
             //----------------CIP Command "Get Attribute Single"
 
             //----------------Requested Path size
-            commonPacketFormat.Data.Add(2);
+            commonPacketFormat.Data.Add((byte)(requestedPath.Length / 2));
             //----------------Requested Path size
 
             //----------------Path segment for Class ID
-            commonPacketFormat.Data.Add(0x20);
-            commonPacketFormat.Data.Add((byte)classID);
             //----------------Path segment for Class ID
 
             //----------------Path segment for Instance ID
-            commonPacketFormat.Data.Add(0x24);
-            commonPacketFormat.Data.Add((byte)instanceID);
             //----------------Path segment for Instace ID
-
+            for (int i = 0; i < requestedPath.Length; i++)
+            {
+                commonPacketFormat.Data.Add(requestedPath[i]);
+            }
 
             byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
@@ -1071,13 +1040,14 @@ namespace Sres.Net.EEIP
 
         public byte[] SetAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
         {
+            byte[] requestedPath = GetEPath(classID, instanceID, attributeID);
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[48 + value.Length];
+            byte[] dataToSend = new byte[42 + value.Length + requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
-            encapsulation.Length = (UInt16)(24+value.Length);
+            encapsulation.Length = (UInt16)(18+value.Length + requestedPath.Length);
             //---------------Interface Handle CIP
             encapsulation.CommandSpecificData.Add(0);
             encapsulation.CommandSpecificData.Add(0);
@@ -1106,26 +1076,24 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Set_Attribute_Single);
             //----------------CIP Command "Set Attribute Single"
 
-            //----------------Requested Path size
-            commonPacketFormat.Data.Add(3);
-            //----------------Requested Path size
+            //----------------Requested Path size (number of 16 bit words)
+            commonPacketFormat.Data.Add((byte)(requestedPath.Length/2));
+            //----------------Requested Path size (number of 16 bit words)
 
             //----------------Path segment for Class ID
-            commonPacketFormat.Data.Add(0x20);
-            commonPacketFormat.Data.Add((byte)classID);
             //----------------Path segment for Class ID
 
             //----------------Path segment for Instance ID
-            commonPacketFormat.Data.Add(0x24);
-            commonPacketFormat.Data.Add((byte)instanceID);
             //----------------Path segment for Instace ID
 
             //----------------Path segment for Attribute ID
-            commonPacketFormat.Data.Add(0x30);
-            commonPacketFormat.Data.Add((byte)attributeID);
             //----------------Path segment for Attribute ID
+            for (int i = 0; i < requestedPath.Length; i++)
+            {
+                commonPacketFormat.Data.Add(requestedPath[i]);
+            }
 
-            //----------------Data
+                //----------------Data
             for (int i = 0; i < value.Length; i++)
             {
                 commonPacketFormat.Data.Add(value[i]);
@@ -1153,6 +1121,85 @@ namespace Sres.Net.EEIP
             System.Buffer.BlockCopy(data, 44, returnData, 0, bytes - 44);
 
             return returnData;
+        }
+
+        /// <summary>
+        /// Get the Encrypted Request Path - See Volume 1 Appendix C (C9)
+        /// e.g. for 8 Bit: 20 05 24 02 30 01
+        /// for 16 Bit: 21 00 05 00 24 02 30 01
+        /// </summary>
+        /// <param name="classID">Requested Class ID</param>
+        /// <param name="instanceID">Requested Instance ID</param>
+        /// <param name="attributeID">Requested Attribute ID - if "0" the attribute will be ignored</param>
+        /// <returns>Encrypted Request Path</returns>
+        private byte[] GetEPath(int classID, int instanceID, int attributeID)
+        {
+            int byteCount = 0;
+            if (classID < 0xff)
+                byteCount = byteCount + 2;
+            else
+                byteCount = byteCount + 4;
+           
+            if (instanceID < 0xff)
+                byteCount = byteCount + 2;
+            else
+                byteCount = byteCount + 4;
+            if (attributeID != 0)
+                if (attributeID < 0xff)
+                    byteCount = byteCount + 2;
+                else
+                    byteCount = byteCount + 4;
+
+            byte[] returnValue = new byte[byteCount];
+            byteCount = 0;
+            if (classID < 0xff)
+            {
+                returnValue[byteCount] = 0x20;
+                returnValue[byteCount+1] = (byte)classID;
+                byteCount = byteCount + 2;
+            }
+            else
+            {
+                returnValue[byteCount] = 0x21;
+                returnValue[byteCount + 1] = 0;                             //Padded Byte
+                returnValue[byteCount + 2] = (byte)classID;                 //LSB
+                returnValue[byteCount + 3] = (byte)(classID>>8);            //MSB
+                byteCount = byteCount + 4;
+            }
+
+
+            if (instanceID < 0xff)
+            {
+                returnValue[byteCount] = 0x24;
+                returnValue[byteCount + 1] = (byte)instanceID;
+                byteCount = byteCount + 2;
+            }
+            else
+            {
+                returnValue[byteCount] = 0x25;
+                returnValue[byteCount + 1] = 0;                                //Padded Byte
+                returnValue[byteCount + 2] = (byte)instanceID;                 //LSB
+                returnValue[byteCount + 3] = (byte)(instanceID >> 8);          //MSB
+                byteCount = byteCount + 4;
+            }
+            if (attributeID != 0)
+                if (attributeID < 0xff)
+                {
+                    returnValue[byteCount] = 0x30;
+                    returnValue[byteCount + 1] = (byte)attributeID;
+                    byteCount = byteCount + 2;
+                }
+                else
+                {
+                    returnValue[byteCount] = 0x31;
+                    returnValue[byteCount + 1] = 0;                                 //Padded Byte
+                    returnValue[byteCount + 2] = (byte)attributeID;                 //LSB
+                    returnValue[byteCount + 3] = (byte)(attributeID >> 8);          //MSB
+                    byteCount = byteCount + 4;
+                }
+
+            return returnValue;
+
         }
 
         /// <summary>
@@ -1255,7 +1302,6 @@ namespace Sres.Net.EEIP
            
             return (((inputByte>>bitposition)&0x01) != 0) ? true : false;
         }
-
     }
 
     public enum ConnectionType : byte

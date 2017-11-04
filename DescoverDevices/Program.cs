@@ -22,8 +22,9 @@ namespace DescoverDevices
                 Console.WriteLine("Vendor ID: " + cipIdentityItem[i].VendorID1);
                 Console.WriteLine("Product-code: " + cipIdentityItem[i].ProductCode1);
                 Console.WriteLine("Type-Code: " + cipIdentityItem[i].ItemTypeCode);
+                Console.WriteLine("Serial Number: " + cipIdentityItem[i].SerialNumber1);
 
-                
+
             }
             Console.ReadKey();
         }
