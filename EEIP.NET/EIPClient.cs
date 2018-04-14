@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -123,7 +124,13 @@ namespace Sres.Net.EEIP
         /// Could be used to determine a Timeout
         /// </summary>        
         public DateTime LastReceivedImplicitMessage { get; set; }
-
+    
+        public EEIPClient()
+        {
+            Console.WriteLine("EEIP Library Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            Console.WriteLine("Copyright (c) Stefan Rossmann Engineering Solutions");
+            Console.WriteLine();
+        }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
@@ -158,6 +165,7 @@ namespace Sres.Net.EEIP
         }
 
         List<Encapsulation.CIPIdentityItem> returnList = new List<Encapsulation.CIPIdentityItem>();
+
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
