@@ -909,7 +909,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.AddressLength = 0x0000;
 
             commonPacketFormat.DataItem = 0xB2;
-            commonPacketFormat.DataLength = 8;
+            commonPacketFormat.DataLength = (UInt16)(2 + requestedPath.Length);
 
 
 
@@ -994,13 +994,13 @@ namespace Sres.Net.EEIP
             commonPacketFormat.AddressLength = 0x0000;
 
             commonPacketFormat.DataItem = 0xB2;
-            commonPacketFormat.DataLength = 6;
+            commonPacketFormat.DataLength = (UInt16)(2 + requestedPath.Length); //WAS 6
 
 
 
-            //----------------CIP Command "Get Attribute Single"
+            //----------------CIP Command "Get Attribute All"
             commonPacketFormat.Data.Add((byte)Sres.Net.EEIP.CIPCommonServices.Get_Attributes_All);
-            //----------------CIP Command "Get Attribute Single"
+            //----------------CIP Command "Get Attribute All"
 
             //----------------Requested Path size
             commonPacketFormat.Data.Add((byte)(requestedPath.Length / 2));
@@ -1068,7 +1068,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.AddressLength = 0x0000;
 
             commonPacketFormat.DataItem = 0xB2;
-            commonPacketFormat.DataLength = (UInt16)(8 + value.Length);
+            commonPacketFormat.DataLength = (UInt16)(2 + value.Length+requestedPath.Length);
 
 
 
@@ -1178,7 +1178,7 @@ namespace Sres.Net.EEIP
             {
                 returnValue[byteCount] = 0x25;
                 returnValue[byteCount + 1] = 0;                                //Padded Byte
-                returnValue[byteCount + 2] = (byte)instanceID;                 //LSB
+                returnValue[byteCount + 2] = ((byte)instanceID);                 //LSB
                 returnValue[byteCount + 3] = (byte)(instanceID >> 8);          //MSB
                 byteCount = byteCount + 4;
             }

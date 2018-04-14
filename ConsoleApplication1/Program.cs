@@ -16,49 +16,31 @@ namespace ConsoleApplication1
 
 
             EEIPClient eeipClient = new EEIPClient();
-            eeipClient.IPAddress = "192.168.178.107";
+            eeipClient.IPAddress = "192.168.0.123";
             eeipClient.RegisterSession();
-            //Console.WriteLine("Product Name: " + eeipClient.IdentityObject.ProductName);
-            //Console.WriteLine("Product Code: " + eeipClient.IdentityObject.ProductCode);
-            //byte[] data =eeipClient.GetAttributeSingle(0x4, 0x65,3);
-            //for (int i = 0; i < data.Length; i++)
-            //    Console.WriteLine(data[i]);
-            //Console.ReadKey();
-            //UInt32 sessionHandle = eeipClient.RegisterSession("192.168.178.107", 0xAF12);
-            //            eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Null;
-            //            eipClient.O_T_Length = 0;
-
-
-            eeipClient.O_T_InstanceID = 0x64;
-            eeipClient.O_T_Length = eeipClient.Detect_O_T_Length();
-            eeipClient.O_T_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Header32Bit;
-            eeipClient.O_T_OwnerRedundant = false;
-            eeipClient.O_T_Priority = Sres.Net.EEIP.Priority.Scheduled;
-            eeipClient.O_T_VariableLength = false;
-            eeipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Point_to_Point;
-
-            eeipClient.T_O_InstanceID = 0x65;
-            eeipClient.T_O_Length = eeipClient.Detect_T_O_Length();
-            eeipClient.T_O_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Modeless;
-            eeipClient.T_O_OwnerRedundant = false;
-            eeipClient.T_O_Priority = Sres.Net.EEIP.Priority.Scheduled;
-            eeipClient.T_O_VariableLength = false;
-            eeipClient.T_O_ConnectionType = Sres.Net.EEIP.ConnectionType.Multicast;
-            eeipClient.ForwardOpen();
-            while (true)
-            {
-                Console.Write(eeipClient.LastReceivedImplicitMessage);
-                Console.WriteLine(eeipClient.T_O_IOData[8]);
-                eeipClient.O_T_IOData[0] = (byte)((byte)eeipClient.O_T_IOData[0] + (byte)1);
-                eeipClient.O_T_IOData[1] = (byte)((byte)eeipClient.O_T_IOData[1] - (byte)1);
-                System.Threading.Thread.Sleep(500);
-            }
-
-
-
-            Console.ReadKey();
-            eeipClient.ForwardClose();
+            byte[] response = eeipClient.GetAttributeSingle(0x66, 1, 0x325);
+            Console.WriteLine("Current Value Sensor 1: " + (response[1] * 255 + response[0]).ToString());
+            response = eeipClient.GetAttributeSingle(0x66, 2, 0x325);
+            Console.WriteLine("Current Value Sensor 2: " + (response[1] * 255 + response[0]).ToString());
+            Console.WriteLine();
+            Console.Write("Enter intensity for Sensor 1 [1..100]");
+            int value = int.Parse(Console.ReadLine());
+            Console.WriteLine("Set Light intensity Sensor 1 to "+value+"%");
+            eeipClient.SetAttributeSingle(0x66, 1, 0x389,new byte [] {(byte)value,0 });
+            Console.Write("Enter intensity for Sensor 2 [1..100]");
+            value = int.Parse(Console.ReadLine());
+            Console.WriteLine("Set Light intensity Sensor 2 to " + value + "%");
+            eeipClient.SetAttributeSingle(0x66, 2, 0x389, new byte[] { (byte)value, 0 });
+            Console.WriteLine();
+            Console.WriteLine("Read Values from device to approve the value");
+            response = eeipClient.GetAttributeSingle(0x66, 1, 0x389);
+            Console.WriteLine("Current light Intensity Sensor 1 in %: " + (response[1] * 255 + response[0]).ToString());
+            response = eeipClient.GetAttributeSingle(0x66, 2, 0x389);
+            Console.WriteLine("Current light Intensity Sensor 2 in %: " + (response[1] * 255 + response[0]).ToString());
             eeipClient.UnRegisterSession();
+            Console.ReadKey();
+     
+       
         }
     }
 }
