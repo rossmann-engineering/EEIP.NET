@@ -262,9 +262,14 @@ namespace Sres.Net.EEIP
             sessionHandle = 0;
         }
 
+        public void ForwardOpen()
+        {
+            this.ForwardOpen(false);
+        }
+
         System.Net.Sockets.UdpClient udpClientReceive;
         bool udpClientReceiveClosed = false;
-        public void ForwardOpen()
+        public void ForwardOpen(bool largeForwardOpen)
         {
             udpClientReceiveClosed = false;
             ushort o_t_headerOffset = 2;                    //Zählt den Sequencecount und evtl 32bit header zu der Länge dazu
@@ -308,12 +313,20 @@ namespace Sres.Net.EEIP
             
             commonPacketFormat.DataItem = 0xB2;
             commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset);
+            if (largeForwardOpen)
+                commonPacketFormat.DataLength = (ushort)(commonPacketFormat.DataLength + 4);
 
 
 
-            //----------------CIP Command "Forward Open"
-            commonPacketFormat.Data.Add(0x54);
-            //----------------CIP Command "Forward Open"
+            //----------------CIP Command "Forward Open" (Service Code 0x54)
+            if (!largeForwardOpen)
+                commonPacketFormat.Data.Add(0x54);
+            //----------------CIP Command "Forward Open"  (Service Code 0x54)
+
+            //----------------CIP Command "large Forward Open" (Service Code 0x5B)
+            else
+                commonPacketFormat.Data.Add(0x5B);
+            //----------------CIP Command "large Forward Open"  (Service Code 0x5B)
 
             //----------------Requested Path size
             commonPacketFormat.Data.Add(2);
@@ -389,9 +402,16 @@ namespace Sres.Net.EEIP
             byte priority = (byte)O_T_Priority;         //00=low; 01=High; 10=Scheduled; 11=Urgent
             bool variableLength = O_T_VariableLength;       //0=fixed; 1=variable
             UInt16 connectionSize = (ushort)(O_T_Length + o_t_headerOffset);      //The maximum size in bytes og the data for each direction (were applicable) of the connection. For a variable -> maximum
-            UInt16 NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
+            UInt32 NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
+            if (largeForwardOpen)
+                NetworkConnectionParameters = (UInt32)((uint)(connectionSize & 0xFFFF) | ((Convert.ToUInt32(variableLength)) << 25) | (uint)((priority & 0x03) << 26) | (uint)((connectionType & 0x03) << 29) | ((Convert.ToUInt32(redundantOwner)) << 31));
             commonPacketFormat.Data.Add((byte)NetworkConnectionParameters);
             commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 8));
+            if (largeForwardOpen)
+            {
+                commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 16));
+                commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 24));
+            }
             //----------------O->T Network Connection Parameters
 
             //----------------Requested Packet Rate T->O in Microseconds
@@ -410,8 +430,15 @@ namespace Sres.Net.EEIP
             variableLength = T_O_VariableLength;
             connectionSize = (byte)(T_O_Length  + t_o_headerOffset);
             NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
+            if (largeForwardOpen)
+                NetworkConnectionParameters = (UInt32)((uint)(connectionSize & 0xFFFF) | ((Convert.ToUInt32(variableLength)) << 25) | (uint)((priority & 0x03) << 26) | (uint)((connectionType & 0x03) << 29) | ((Convert.ToUInt32(redundantOwner)) << 31));
             commonPacketFormat.Data.Add((byte)NetworkConnectionParameters);
             commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 8));
+            if (largeForwardOpen)
+            {
+                commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 16));
+                commonPacketFormat.Data.Add((byte)(NetworkConnectionParameters >> 24));
+            }
             //----------------T->O Network Connection Parameters
 
             //----------------Transport Type/Trigger
@@ -523,6 +550,11 @@ namespace Sres.Net.EEIP
             sendThread.Start();
 
             var asyncResult = udpClientReceive.BeginReceive(new AsyncCallback(ReceiveCallbackClass1), s);
+        }
+
+        public void LargeForwardOpen()
+        {
+            this.ForwardOpen(true);
         }
 
         private ushort o_t_detectedLength;
