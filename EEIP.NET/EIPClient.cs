@@ -120,6 +120,10 @@ namespace Sres.Net.EEIP
         /// </summary>
         public byte AssemblyObjectClass { get; set; } = 0x04;
         /// <summary>
+        /// ConfigurationAssemblyInstanceID is the InstanceID of the configuration Instance in the Assembly Object Class (Standard: 0x01)
+        /// </summary>
+        public byte ConfigurationAssemblyInstanceID { get; set; } = 0x01;
+        /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
         /// Could be used to determine a Timeout
         /// </summary>        
@@ -422,7 +426,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add((byte)(0x20));
             commonPacketFormat.Data.Add((byte)(AssemblyObjectClass));
             commonPacketFormat.Data.Add((byte)(0x24));
-            commonPacketFormat.Data.Add((byte)(0x01));
+            commonPacketFormat.Data.Add((byte)(ConfigurationAssemblyInstanceID));
             if (O_T_ConnectionType != ConnectionType.Null)
             {
                 commonPacketFormat.Data.Add((byte)(0x2C));
@@ -675,7 +679,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add((byte)(0x20));
             commonPacketFormat.Data.Add(AssemblyObjectClass);
             commonPacketFormat.Data.Add((byte)(0x24));
-            commonPacketFormat.Data.Add((byte)(0x01));
+            commonPacketFormat.Data.Add((byte)(ConfigurationAssemblyInstanceID));
             if (O_T_ConnectionType != ConnectionType.Null)
             {
                 commonPacketFormat.Data.Add((byte)(0x2C));
