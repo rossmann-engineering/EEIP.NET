@@ -432,6 +432,17 @@ namespace Keyence_NU_RP1_Implicit
 }
 ```
 
+### Videos
+
+- [Explicit Messaging: Read Analog Inputs](https://www.youtube.com/watch?v=CpL3LZuVGYA&t=88s)
+- [Explicit Messaging: Read Analog Inputs](https://www.youtube.com/watch?v=VzbxxTsTcFo&t=14s)
+- [Explicit Messaging: Read Digital Inputs](https://www.youtube.com/watch?v=Fi-_o78ESrk&t=26s)
+- [Allen Bradley Point IO Implicit Messaging](https://www.youtube.com/watch?v=NLCXnVpDgl4)
+
+## Authors and acknowledgment
+
+Sponsored by [Rossman Engineering](http://www.rossmann-engineering.de/).
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
