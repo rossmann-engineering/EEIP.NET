@@ -100,11 +100,18 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
         /// </summary>
-        public byte[] O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T   
+        private byte[] _O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T   
+
+        private object _O_T_IOData_lock = new object();
+
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
         /// </summary>
-        public byte[] T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O  
+        private byte[] _T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O  
+
+        private object _T_O_IOData_lock = new object();
+
+
         /// <summary>
         /// Used Real-Time Format Originator -> Target for Implicit Messaging (Default: RealTimeFormat.Header32Bit)
         /// Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
@@ -851,9 +858,11 @@ namespace Sres.Net.EEIP
 
                 }
 
-                    //---------------Write data
-                    for ( int i = 0; i < O_T_Length; i++)
-                        o_t_IOData[20+headerOffset+i] = (byte)O_T_IOData[i];
+                //---------------Write data
+                lock (_O_T_IOData_lock)
+                {
+                    Array.Copy(_O_T_IOData, 0, o_t_IOData, 20 + headerOffset, O_T_Length);
+                }
                 //---------------Write data
 
 
@@ -895,13 +904,13 @@ namespace Sres.Net.EEIP
                         headerOffset = 4;
                     if (T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
                         headerOffset = 0;
-                    for (int i = 0; i < receiveBytes.Length-20-headerOffset; i++)
+
+                    lock (_T_O_IOData_lock)
                     {
-                        T_O_IOData[i] = receiveBytes[20 + i + headerOffset];
+                        Array.Copy(receiveBytes, 20 + headerOffset, _T_O_IOData, 0,
+                            receiveBytes.Length - 20 - headerOffset);
                     }
                     //Console.WriteLine(T_O_IOData[0]);
-
-
                 }
             }
             LastReceivedImplicitMessage = DateTime.Now;
@@ -1332,6 +1341,47 @@ namespace Sres.Net.EEIP
                     tcpIpInterfaceObject = new ObjectLibrary.TcpIpInterfaceObject(this);
                 return tcpIpInterfaceObject;
 
+            }
+        }
+
+        /// <summary>
+        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
+        /// </summary>
+        public byte[] O_T_IOData
+        {
+            get
+            {
+                lock (_O_T_IOData_lock)
+                {
+                    return (byte[]) _O_T_IOData.Clone();
+                }
+            }
+            set
+            {
+                lock (_O_T_IOData_lock)
+                {
+                    var length = value == null ? 0 : Math.Min(value.Length, _O_T_IOData.Length);
+                    if (value != null)
+                    {
+                        Array.Copy(value, _O_T_IOData, length);
+                    }
+
+                    Array.Clear(_O_T_IOData, length, _O_T_IOData.Length - length);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
+        /// </summary>
+        public byte[] T_O_IOData
+        {
+            get
+            {
+                lock (_T_O_IOData_lock)
+                {
+                    return (byte[]) _T_O_IOData.Clone();
+                }
             }
         }
 
