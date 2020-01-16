@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EEIP">
-      <HintPath>Z:\Documents\Rossmann Engineering\OpenSource\EthernetIP\EEIP.NET\EEIP.NET\bin\Debug\EEIP.dll</HintPath>
+      <HintPath>..\EEIP.NET\bin\Debug\EEIP.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
