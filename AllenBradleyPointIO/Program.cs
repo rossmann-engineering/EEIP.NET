@@ -11,8 +11,9 @@ using Sres.Net.EEIP;
 // Allen-Bradley 1734-OB4E 4-Channel Digital Output Module
 // Allen-Bradley 1734-OB4E 4-Channel Digital Output Module
 // Allen-Bradley 1734-OB4E 4-Channel Digital Output Module
-//IP-Address: 192.168.178.107 (By DHCP-Server)
-
+// IP-Address: 192.168.178.107 (By DHCP-Server)
+// This example also handles a reconnection procedure if the Impicit Messaging has Timed out 
+// (If the Property "LastReceivedImplicitMessage" is more than one second ago)
 namespace AllenBradleyPointIO
 {
     class Program
