@@ -255,7 +255,14 @@ namespace Sres.Net.EEIP
             encapsulation.Length = 0;
             encapsulation.SessionHandle =  sessionHandle;
  
-            stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
+            try
+            {
+                stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
+            }
+            catch (Exception)
+            {
+                //Handle Exception to allow to Close the Stream if the connection was closed by Remote Device
+            }
             byte[] data = new Byte[256];
             client.Close();
             stream.Close();
@@ -727,11 +734,25 @@ namespace Sres.Net.EEIP
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
             System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
             encapsulation.toBytes();
-
-            stream.Write(dataToWrite, 0, dataToWrite.Length);
+            try
+            {
+                stream.Write(dataToWrite, 0, dataToWrite.Length);
+            }
+            catch (Exception e)
+            {
+                //Handle Exception  to allow Forward close if the connection was closed by the Remote Device before
+            }
             byte[] data = new Byte[564];
 
-            Int32 bytes = stream.Read(data, 0, data.Length);
+            try
+            {
+                Int32 bytes = stream.Read(data, 0, data.Length);
+            }
+            catch (Exception e)
+            {
+                //Handle Exception  to allow Forward close if the connection was closed by the Remote Device before
+            }
+
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"

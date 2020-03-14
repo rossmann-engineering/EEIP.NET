@@ -50,7 +50,7 @@ namespace AllenBradleyPointIO
 
             while(true)
             {
-
+                
                 //Read the Inputs Transfered form Target -> Originator
                 Console.WriteLine("State of first Input byte: " + eeipClient.T_O_IOData[8]);
                 Console.WriteLine("State of second Input byte: " + eeipClient.T_O_IOData[9]);
@@ -62,6 +62,24 @@ namespace AllenBradleyPointIO
                 eeipClient.O_T_IOData[3] = 8;
 
                 System.Threading.Thread.Sleep(500);
+
+                //Detect Timeout (Read last Received Message Property)
+                if (DateTime.Now.Ticks > eeipClient.LastReceivedImplicitMessage.Ticks + (1000 * 10000))
+                    {
+                    try
+                    {
+                        eeipClient.ForwardClose();
+                        eeipClient.UnRegisterSession();
+                    
+                        eeipClient.RegisterSession();
+                        eeipClient.ForwardOpen();
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Couldn't reconnect to Point I/O");
+                    }
+                    }
+
             }
 
             //Close the Session
