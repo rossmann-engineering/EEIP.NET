@@ -8,6 +8,8 @@
     <Product>EEIP.NET</Product>
     <Description>Ethernet/IP compatible library for .NET implementations Supports IO Scanner and Explicit Message Client functionality For Data Exchange with Ethernet/IP Devices.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
     <PackageId>EEIP.NET</PackageId>
     <Authors>Stefan Rossmann and others</Authors>
     <PackageProjectUrl>https://github.com/rossmann-engineering/EEIP.NET</PackageProjectUrl>
