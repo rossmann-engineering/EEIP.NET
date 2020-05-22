@@ -59,9 +59,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LabView Example\Builds\LabView_EEIP.aliases" />
+    <None Include="LabView Example\Builds\LabView_EEIP.ini" />
+    <None Include="LabView Example\EEIP.vi" />
+    <None Include="LabView Example\EEIP_LabViewExample.aliases" />
+    <None Include="LabView Example\EEIP_LabViewExample.lvlps" />
+    <None Include="LabView Example\EEIP_LabViewExample.lvproj" />
     <None Include="Notes\Erstellen und Veröffentlichen eines .NET Framework-NuGet-Pakets mithilfe von Visual Studio auf Windows _ Microsoft Docs.pdf" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="LabView Example\Builds\data\EEIP.dll" />
+    <Content Include="LabView Example\Builds\LabView_EEIP.exe" />
+    <Content Include="LabView Example\EEIP.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
