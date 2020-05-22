@@ -7,8 +7,8 @@
     <ProjectGuid>{534BDBA6-7FB6-43D6-B7B4-C7E2ACB398E1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Explicit_Message_Example_ReadAnalogInput</RootNamespace>
-    <AssemblyName>Explicit_Message_Example_ReadAnalogInput</AssemblyName>
+    <RootNamespace>Sres.Networking.Eeip.Examples</RootNamespace>
+    <AssemblyName>Wago_750_352_Explicit</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

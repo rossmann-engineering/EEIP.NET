@@ -7,7 +7,7 @@
     <ProjectGuid>{C7A980DD-A57F-4FC7-A555-10EDC85C749D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoleApplication1</RootNamespace>
+    <RootNamespace>Sres.Networking.Eeip.Library</RootNamespace>
     <AssemblyName>EEIP</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

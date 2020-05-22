@@ -7,7 +7,7 @@
     <ProjectGuid>{65A7A625-8486-4333-916F-FB20190CC16F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AllenBradleyPointIO</RootNamespace>
+    <RootNamespace>Sres.Networking.Eeip.Examples</RootNamespace>
     <AssemblyName>AllenBradleyPointIO</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -7,7 +7,7 @@
     <ProjectGuid>{FCB4E001-5BEA-4775-AD0A-B2C4D9172C7A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Keyence_NU_EP1_Implicit2</RootNamespace>
+    <RootNamespace>Sres.Networking.Eeip.Examples</RootNamespace>
     <AssemblyName>Keyence-NU_EP1_Implicit2</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

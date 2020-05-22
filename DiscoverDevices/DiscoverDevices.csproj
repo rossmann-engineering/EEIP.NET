@@ -7,8 +7,8 @@
     <ProjectGuid>{22F5D7D8-4E00-4105-88DC-D8F785BE4196}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DescoverDevices</RootNamespace>
-    <AssemblyName>DescoverDevices</AssemblyName>
+    <RootNamespace>Sres.Networking.Eeip.Examples</RootNamespace>
+    <AssemblyName>DiscoverDevices</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
