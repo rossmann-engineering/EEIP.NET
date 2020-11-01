@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wago_750_352_Explicit3", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoverDevices", "DiscoverDevices\DiscoverDevices.csproj", "{22F5D7D8-4E00-4105-88DC-D8F785BE4196}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanuc_R30iA", "Fanuc_R30iA\Fanuc_R30iA.csproj", "{9E73378B-0484-4717-A8DA-C15BB95A9B74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanuc_R30iA_Implicit", "Fanuc_R30iA_Implicit\Fanuc_R30iA_Implicit.csproj", "{0DF08474-7DCC-4566-B844-9F55BAFE4D61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{22F5D7D8-4E00-4105-88DC-D8F785BE4196}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F5D7D8-4E00-4105-88DC-D8F785BE4196}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22F5D7D8-4E00-4105-88DC-D8F785BE4196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E73378B-0484-4717-A8DA-C15BB95A9B74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E73378B-0484-4717-A8DA-C15BB95A9B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E73378B-0484-4717-A8DA-C15BB95A9B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E73378B-0484-4717-A8DA-C15BB95A9B74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF08474-7DCC-4566-B844-9F55BAFE4D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF08474-7DCC-4566-B844-9F55BAFE4D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF08474-7DCC-4566-B844-9F55BAFE4D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF08474-7DCC-4566-B844-9F55BAFE4D61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

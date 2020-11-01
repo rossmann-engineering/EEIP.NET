@@ -1,0 +1,2089 @@
+[File]
+        DescText = "FANUC Robot EDS File";
+        CreateDate = 04-06-2007;
+        CreateTime = 17:30:49;
+        ModDate = 09-15-2009;
+        ModTime = 09:28:49;
+        Revision = 1.6;
+        HomeURL = "http://fanucrobotics.com";
+
+
+[Device]
+        VendCode = 356;
+        VendName = "FANUC Robotics North America";
+        ProdType = 12;
+        ProdTypeStr = "Communications Adapter";
+        ProdCode = 2;
+    $ Rev 2.2 is for v7.30 and v7.40 and non-safety v7.50 software
+        MajRev = 2;
+        MinRev = 2;
+        ProdName = "FANUC Robot";
+        Icon = "frnabot.ico";
+        1_RSNetWorx_CNetTool = "{32f5f4a0-1fa3-11d5-9d01-00d0b76b8ea2}";
+        1_RSNetWorx_CNetSCTPlugin = "{9A27F910-540E-11D4-B15A-005004B56933}";
+
+[Device Classification]
+        Class1 = EtherNetIP;
+
+[Params]
+        Param1 =
+                0,                      $ reserved
+                ,,                      $ empty
+                                        $ empty
+                0x0000,                 $ Descriptor
+                0xC7,                   $ Data Type (unsigned 16-bit) VI C-38
+                2,                      $ Data Size in bytes
+                "Output",               $ Parameter Name
+                "bytes",                $ Units display string
+                "Output",               $ Help string
+                0,128,8,                $ min, max, default values
+                ,,,,                    $ mult, div, base, offset
+                ,,,,                    $ mult, div, vase, offset link not used
+                ;                       $ decimal not used
+
+        Param2 =
+                0,
+                ,,
+                0x0000,
+                0xC7,
+                2,
+                "Input",
+                "bytes",
+                "Input",                $ Help string
+                0,128,8,
+                ,,,,
+                ,,,,
+                ;
+AssemExa101
+        Param3 =
+                0,
+                ,,
+                0x0004,
+                0xC8,                   $ RPI must be a UDINT
+                4,
+                "RPI",
+                "microseconds",
+                "RPI--default 32ms",    $ Help string
+                8000,5000000,32000,
+                1,1,1,-1,
+                ,,,,
+                ;
+
+        Param4 =
+                0,
+                ,,
+                0x0000,
+                0xC7,
+                2,
+                "Assembly",
+                "bytes",
+                "Assembly",             $ Help string
+                0,128,8,
+                ,,,,
+                ,,,,
+                ;
+
+[Assembly]
+        Revision = 2;
+        AssemExa101 =
+                "DI Slot 1",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa102 =
+                "DI Slot 2",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa103 =
+                "DI Slot 3",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa104 =
+                "DI Slot 4",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa105 =
+                "DI Slot 5",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa106 =
+                "DI Slot 6",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa107 =
+                "DI Slot 7",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa108 =
+                "DI Slot 8",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa109 =
+                "DI Slot 9",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa110 =
+                "DI Slot 10",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa111 =
+                "DI Slot 11",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa112 =
+                "DI Slot 12",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa113 =
+                "DI Slot 13",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa114 =
+                "DI Slot 14",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa115 =
+                "DI Slot 15",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa116 =
+                "DI Slot 16",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa117 =
+                "DI Slot 17",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa118 =
+                "DI Slot 18",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa119 =
+                "DI Slot 19",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa120 =
+                "DI Slot 20",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa121 =
+                "DI Slot 21",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa122 =
+                "DI Slot 22",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa123 =
+                "DI Slot 23",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa124 =
+                "DI Slot 24",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa125 =
+                "DI Slot 25",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa126 =
+                "DI Slot 26",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa127 =
+                "DI Slot 27",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa128 =
+                "DI Slot 28",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa129 =
+                "DI Slot 29",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa130 =
+                "DI Slot 30",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa131 =
+                "DI Slot 31",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa132 =
+                "DI Slot 32",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa151 =
+                "DO Slot 1",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa152 =
+                "DO Slot 2",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa153 =
+                "DO Slot 3",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa154 =
+                "DO Slot 4",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa155 =
+                "DO Slot 5",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa156 =
+                "DO Slot 6",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa157 =
+                "DO Slot 7",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa158 =
+                "DO Slot 8",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa159 =
+                "DO Slot 9",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa160 =
+                "DO Slot 10",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa161 =
+                "DO Slot 11",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa162 =
+                "DO Slot 12",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa163 =
+                "DO Slot 13",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa164 =
+                "DO Slot 14",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa165 =
+                "DO Slot 15",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa166 =
+                "DO Slot 16",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa167 =
+                "DO Slot 17",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa168 =
+                "DO Slot18",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa169 =
+                "DO Slot 19",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa170 =
+                "DO Slot 20",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa171 =
+                "DO Slot 21",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa172 =
+                "DO Slot 22",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa173 =
+                "DO Slot 23",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa174 =
+                "DO Slot 24",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa175 =
+                "DO Slot 25",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa176 =
+                "DO Slot 26",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa177 =
+                "DO Slot 27",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa178 =
+                "DO Slot 28",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa179 =
+                "DO Slot 29",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa180 =
+                "DO Slot 30",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa181 =
+                "DO Slot 31",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa182 =
+                "DO Slot 32",
+                "",
+                Param4,
+                0x0001,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa800 =
+                "DIs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa801 =
+                "DOs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa802 =
+                "AIs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa803 =
+                "AOs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa804 =
+                "Tool Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa805 =
+                "PLC Input",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa806 =
+                "PLC Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa807 =
+                "Robot Digital Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa808 =
+                "Robot Digital Input",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa809 =
+                "Brake Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa810 =
+                "OPIN",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa811 =
+                "OPOUT",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa813 =
+                "TP Digital Input",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa814 =
+                "TP Digital Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa815 =
+                "Weld Input",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa816 =
+                "Weld Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa817 =
+                "Grouped Inputs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa818 =
+                "Grouped Outputs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa819 =
+                "UOPIN",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa820 =
+                "UOPOUT",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa821 =
+                "Laser DIn",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa822 =
+                "Laser DOut",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa823 =
+                "Laser AIn",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa824 =
+                "Laser AOut",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa825 =
+                "Weld Stick Input",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa826 =
+                "Weld Stick Output",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa827 =
+                "Memory Image Booleans",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa828 =
+                "Memory Image DINs",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa829 =
+                "Dummy Boolean Port Type",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa830 =
+                "Dummy Numeric Port Type",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa831 =
+                "Process Axes (ISDT)",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa832 =
+                "Internal OPIN",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa833 =
+                "Internal OPOUT",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa834 =
+                "Flags",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+        AssemExa835 =
+                "Markers",
+                "",
+                Param4,
+                0x0000,
+                ,,
+                ,,
+                ,,
+                ,;
+
+[Connection Manager]
+        Connection1 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: point/multicast or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 1",    $ Connection name
+                "Adaptor on Slot 1",    $ Help String
+                "20 04 24 64 2C 97 2C 65";    $ Path
+
+        Connection2 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 2",    $ Connection name
+                "Adaptor on Slot 2",    $ Help String
+                "20 04 24 64 2C 98 2C 66";    $ Path
+
+        Connection3 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 3",    $ Connection name
+                "Adaptor on Slot 3",    $ Help String
+                "20 04 24 64 2C 99 2C 67";    $ Path
+
+        Connection4 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 4",    $ Connection name
+                "Adaptor on Slot 4",    $ Help String
+                "20 04 24 64 2C 9A 2C 68";    $ Path
+
+        Connection5 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 5",    $ Connection name
+                "Adaptor on Slot 5",    $ Help String
+                "20 04 24 64 2C 9B 2C 69";    $ Path
+
+        Connection6 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 6",    $ Connection name
+                "Adaptor on Slot 6",    $ Help String
+                "20 04 24 64 2C 9C 2C 6A";    $ Path
+
+        Connection7 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 7",    $ Connection name
+                "Adaptor on Slot 7",    $ Help String
+                "20 04 24 64 2C 9D 2C 6B";    $ Path
+
+        Connection8 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 8",    $ Connection name
+                "Adaptor on Slot 8",    $ Help String
+                "20 04 24 64 2C 9E 2C 6C";    $ Path
+
+        Connection9 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: point/multicast or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 9",    $ Connection name
+                "Adaptor on Slot 9",    $ Help String
+                "20 04 24 64 2C 9F 2C 6D";    $ Path
+
+        Connection10 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 10",   $ Connection name
+                "Adaptor on Slot 10",   $ Help String
+                "20 04 24 64 2C A0 2C 6E";    $ Path
+
+        Connection11 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 11",   $ Connection name
+                "Adaptor on Slot 11",   $ Help String
+                "20 04 24 64 2C A1 2C 6F";    $ Path
+
+        Connection12 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 12",   $ Connection name
+                "Adaptor on Slot 12",   $ Help String
+                "20 04 24 64 2C A2 2C 70";    $ Path
+
+        Connection13 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 13",   $ Connection name
+                "Adaptor on Slot 13",   $ Help String
+                "20 04 24 64 2C A3 2C 71";    $ Path
+
+        Connection14 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 14",   $ Connection name
+                "Adaptor on Slot 14",   $ Help String
+                "20 04 24 64 2C A4 2C 72";    $ Path
+
+        Connection15 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 15",   $ Connection name
+                "Adaptor on Slot 15",   $ Help String
+                "20 04 24 64 2C A5 2C 73";    $ Path
+
+        Connection16 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 16",   $ Connection name
+                "Adaptor on Slot 16",   $ Help String
+                "20 04 24 64 2C A6 2C 74";    $ Path
+
+        Connection17 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: point/multicast or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 17",    $ Connection name
+                "Adaptor on Slot 17",    $ Help String
+                "20 04 24 64 2C A7 2C 75";    $ Path
+
+        Connection18 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 18",    $ Connection name
+                "Adaptor on Slot 18",    $ Help String
+                "20 04 24 64 2C A8 2C 76";    $ Path
+
+        Connection19 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 19",    $ Connection name
+                "Adaptor on Slot 19",    $ Help String
+                "20 04 24 64 2C A9 2C 77";    $ Path
+
+        Connection20 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 20",    $ Connection name
+                "Adaptor on Slot 20",    $ Help String
+                "20 04 24 64 2C AA 2C 78";    $ Path
+
+        Connection21 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 21",    $ Connection name
+                "Adaptor on Slot 21",    $ Help String
+                "20 04 24 64 2C AB 2C 79";    $ Path
+
+        Connection22 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 22",    $ Connection name
+                "Adaptor on Slot 22",    $ Help String
+                "20 04 24 64 2C AC 2C 7A";    $ Path
+
+        Connection23 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 23",    $ Connection name
+                "Adaptor on Slot 23",    $ Help String
+                "20 04 24 64 2C AD 2C 7B";    $ Path
+
+        Connection24 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 24",    $ Connection name
+                "Adaptor on Slot 24",    $ Help String
+                "20 04 24 64 2C AE 2C 7C";    $ Path
+
+        Connection25 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: point/multicast or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 25",    $ Connection name
+                "Adaptor on Slot 25",    $ Help String
+                "20 04 24 64 2C AF 2C 7D";    $ Path
+
+        Connection26 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 26",   $ Connection name
+                "Adaptor on Slot 26",   $ Help String
+                "20 04 24 64 2C B0 2C 7E";    $ Path
+
+        Connection27 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 27",   $ Connection name
+                "Adaptor on Slot 27",   $ Help String
+                "20 04 24 64 2C B1 2C 7F";    $ Path
+
+        Connection28 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 28",   $ Connection name
+                "Adaptor on Slot 28",   $ Help String
+                "20 04 24 64 2C B2 2C 80";    $ Path
+
+        Connection29 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 29",   $ Connection name
+                "Adaptor on Slot 29",   $ Help String
+                "20 04 24 64 2C B3 2C 81";    $ Path
+
+        Connection30 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 30",   $ Connection name
+                "Adaptor on Slot 30",   $ Help String
+                "20 04 24 64 2C B4 2C 82";    $ Path
+
+        Connection31 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 31",   $ Connection name
+                "Adaptor on Slot 31",   $ Help String
+                "20 04 24 64 2C B5 2C 83";    $ Path
+
+        Connection32 =
+                0x04010002,             $ Trigger and transport: class 1, cyclic, exclusive owner
+                0x44640405,             $ Connection: pt2pt both ways or multi T=>O, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Adaptor on Slot 32",   $ Connection name
+                "Adaptor on Slot 32",   $ Help String
+                "20 04 24 64 2C B6 2C 84";    $ Path
+
+        Connection33 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 1",   $ Connection name
+                "Listen-Only Slot 1",   $ Help String
+                "20 04 24 64 2C 96 2C 65";    $ Path
+
+        Connection34 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 2",   $ Connection name
+                "Listen-Only Slot 2",   $ Help String
+                "20 04 24 64 2C 96 2C 66";    $ Path
+
+        Connection35 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 3",   $ Connection name
+                "Listen-Only Slot 3",   $ Help String
+                "20 04 24 64 2C 96 2C 67";    $ Path
+
+        Connection36 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 4",   $ Connection name
+                "Listen-Only Slot 4",   $ Help String
+                "20 04 24 64 2C 96 2C 68";    $ Path
+
+        Connection37 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 5",   $ Connection name
+                "Listen-Only Slot 5",   $ Help String
+                "20 04 24 64 2C 96 2C 69";    $ Path
+
+        Connection38 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 6",   $ Connection name
+                "Listen-Only Slot 6",   $ Help String
+                "20 04 24 64 2C 96 2C 6A";    $ Path
+
+        Connection39 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 7",   $ Connection name
+                "Listen-Only Slot 7",   $ Help String
+                "20 04 24 64 2C 96 2C 6B";    $ Path
+
+        Connection40 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 8",   $ Connection name
+                "Listen-Only Slot 8",   $ Help String
+                "20 04 24 64 2C 96 2C 6C";    $ Path
+
+        Connection41 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 9",   $ Connection name
+                "Listen-Only Slot 9",   $ Help String
+                "20 04 24 64 2C 96 2C 6D";    $ Path
+
+        Connection42 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 10",  $ Connection name
+                "Listen-Only Slot 10",  $ Help String
+                "20 04 24 64 2C 96 2C 6E";    $ Path
+
+        Connection43 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 11",  $ Connection name
+                "Listen-Only Slot 11",  $ Help String
+                "20 04 24 64 2C 96 2C 6F";    $ Path
+
+        Connection44 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 12",  $ Connection name
+                "Listen-Only Slot 12",  $ Help String
+                "20 04 24 64 2C 96 2C 70";    $ Path
+
+        Connection45 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 13",  $ Connection name
+                "Listen-Only Slot 13",  $ Help String
+                "20 04 24 64 2C 96 2C 71";    $ Path
+
+        Connection46 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 14",  $ Connection name
+                "Listen-Only Slot 14",  $ Help String
+                "20 04 24 64 2C 96 2C 72";    $ Path
+
+        Connection47 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 15",  $ Connection name
+                "Listen-Only Slot 15",  $ Help String
+                "20 04 24 64 2C 96 2C 73";    $ Path
+
+        Connection48 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 16",  $ Connection name
+                "Listen-Only Slot 16",  $ Help String
+                "20 04 24 64 2C 96 2C 74";    $ Path
+
+        Connection49 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 17",   $ Connection name
+                "Listen-Only Slot 17",   $ Help String
+                "20 04 24 64 2C 96 2C 75";    $ Path
+
+        Connection50 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 18",   $ Connection name
+                "Listen-Only Slot 18",   $ Help String
+                "20 04 24 64 2C 96 2C 76";    $ Path
+
+        Connection51 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 19",   $ Connection name
+                "Listen-Only Slot 19",   $ Help String
+                "20 04 24 64 2C 96 2C 77";    $ Path
+
+        Connection52 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 20",   $ Connection name
+                "Listen-Only Slot 20",   $ Help String
+                "20 04 24 64 2C 96 2C 78";    $ Path
+
+        Connection53 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 21",   $ Connection name
+                "Listen-Only Slot 21",   $ Help String
+                "20 04 24 64 2C 96 2C 79";    $ Path
+
+        Connection54 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 22",   $ Connection name
+                "Listen-Only Slot 22",   $ Help String
+                "20 04 24 64 2C 96 2C 7A";    $ Path
+
+        Connection55 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 23",   $ Connection name
+                "Listen-Only Slot 23",   $ Help String
+                "20 04 24 64 2C 96 2C 7B";    $ Path
+
+        Connection56 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 24",   $ Connection name
+                "Listen-Only Slot 24",   $ Help String
+                "20 04 24 64 2C 96 2C 7C";    $ Path
+
+        Connection57 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 25",   $ Connection name
+                "Listen-Only Slot 25",   $ Help String
+                "20 04 24 64 2C 96 2C 7D";    $ Path
+
+        Connection58 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 26",  $ Connection name
+                "Listen-Only Slot 26",  $ Help String
+                "20 04 24 64 2C 96 2C 7E";    $ Path
+
+        Connection59 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 27",  $ Connection name
+                "Listen-Only Slot 27",  $ Help String
+                "20 04 24 64 2C 96 2C 7F";    $ Path
+
+        Connection60 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 28",  $ Connection name
+                "Listen-Only Slot 28",  $ Help String
+                "20 04 24 64 2C 96 2C 80";    $ Path
+
+        Connection61 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 29",  $ Connection name
+                "Listen-Only Slot 29",  $ Help String
+                "20 04 24 64 2C 96 2C 81";    $ Path
+
+        Connection62 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 30",  $ Connection name
+                "Listen-Only Slot 30",  $ Help String
+                "20 04 24 64 2C 96 2C 82";    $ Path
+
+        Connection63 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 31",  $ Connection name
+                "Listen-Only Slot 31",  $ Help String
+                "20 04 24 64 2C 96 2C 83";    $ Path
+
+        Connection64 =
+                0x01010002,             $ Trigger and transport: class 1, cyclic, listen only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Listen-Only Slot 32",  $ Connection name
+                "Listen-Only Slot 32",  $ Help String
+                "20 04 24 64 2C 96 2C 84";    $ Path
+
+        Connection65 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 1",    $ Connection name
+                "Input-Only Slot 1",    $ Help String
+                "20 04 24 64 2C 85 2C 65";    $ Path
+
+        Connection66 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 2",    $ Connection name
+                "Input-Only Slot 2",    $ Help String
+                "20 04 24 64 2C 86 2C 66";    $ Path
+
+        Connection67 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 3",    $ Connection name
+                "Input-Only Slot 3",    $ Help String
+                "20 04 24 64 2C 87 2C 67";    $ Path
+
+        Connection68 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 4",    $ Connection name
+                "Input-Only Slot 4",    $ Help String
+                "20 04 24 64 2C 88 2C 68";    $ Path
+
+        Connection69 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 5",    $ Connection name
+                "Input-Only Slot 5",    $ Help String
+                "20 04 24 64 2C 89 2C 69";    $ Path
+
+        Connection70 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 6",    $ Connection name
+                "Input-Only Slot 6",    $ Help String
+                "20 04 24 64 2C 8A 2C 6A";    $ Path
+
+        Connection71 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 7",    $ Connection name
+                "Input-Only Slot 7",    $ Help String
+                "20 04 24 64 2C 8B 2C 6B";    $ Path
+
+        Connection72 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 8",    $ Connection name
+                "Input-Only Slot 8",    $ Help String
+                "20 04 24 64 2C 8C 2C 6C";    $ Path
+
+        Connection73 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 9",    $ Connection name
+                "Input-Only Slot 9",    $ Help String
+                "20 04 24 64 2C 8D 2C 6D";    $ Path
+
+        Connection74 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 10",   $ Connection name
+                "Input-Only Slot 10",   $ Help String
+                "20 04 24 64 2C 8E 2C 6E";    $ Path
+
+        Connection75 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 11",   $ Connection name
+                "Input-Only Slot 11",   $ Help String
+                "20 04 24 64 2C 8F 2C 6F";    $ Path
+
+        Connection76 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 12",   $ Connection name
+                "Input-Only Slot 12",   $ Help String
+                "20 04 24 64 2C 90 2C 70";    $ Path
+
+        Connection77 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 13",   $ Connection name
+                "Input-Only Slot 13",   $ Help String
+                "20 04 24 64 2C 91 2C 71";    $ Path
+
+        Connection78 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 14",   $ Connection name
+                "Input-Only Slot 14",   $ Help String
+                "20 04 24 64 2C 92 2C 72";    $ Path
+
+        Connection79 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 15",   $ Connection name
+                "Input-Only Slot 15",   $ Help String
+                "20 04 24 64 2C 93 2C 73";    $ Path
+
+        Connection80 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 16",   $ Connection name
+                "Input-Only Slot 16",   $ Help String
+                "20 04 24 64 2C 94 2C 74";    $ Path
+
+        Connection81 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 17",    $ Connection name
+                "Input-Only Slot 17",    $ Help String
+                "20 04 24 64 2C B7 2C 65";    $ Path
+
+        Connection82 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 18",    $ Connection name
+                "Input-Only Slot 18",    $ Help String
+                "20 04 24 64 2C B8 2C 66";    $ Path
+
+        Connection83 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 19",    $ Connection name
+                "Input-Only Slot 19",    $ Help String
+                "20 04 24 64 2C B9 2C 67";    $ Path
+
+        Connection84 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 20",    $ Connection name
+                "Input-Only Slot 20",    $ Help String
+                "20 04 24 64 2C BA 2C 68";    $ Path
+
+        Connection85 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 21",    $ Connection name
+                "Input-Only Slot 21",    $ Help String
+                "20 04 24 64 2C BB 2C 69";    $ Path
+
+        Connection86 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 22",    $ Connection name
+                "Input-Only Slot 22",    $ Help String
+                "20 04 24 64 2C BC 2C 6A";    $ Path
+
+        Connection87 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 23",    $ Connection name
+                "Input-Only Slot 23",    $ Help String
+                "20 04 24 64 2C BD 2C 6B";    $ Path
+
+        Connection88 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 24",    $ Connection name
+                "Input-Only Slot 24",    $ Help String
+                "20 04 24 64 2C BE 2C 6C";    $ Path
+
+        Connection89 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 25",    $ Connection name
+                "Input-Only Slot 25",    $ Help String
+                "20 04 24 64 2C BF 2C 6D";    $ Path
+
+        Connection90 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 26",   $ Connection name
+                "Input-Only Slot 26",   $ Help String
+                "20 04 24 64 2C C0 2C 6E";    $ Path
+
+        Connection91 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 27",   $ Connection name
+                "Input-Only Slot 27",   $ Help String
+                "20 04 24 64 2C C1 2C 6F";    $ Path
+
+        Connection92 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 28",   $ Connection name
+                "Input-Only Slot 28",   $ Help String
+                "20 04 24 64 2C C2 2C 70";    $ Path
+
+        Connection93 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 29",   $ Connection name
+                "Input-Only Slot 29",   $ Help String
+                "20 04 24 64 2C C3 2C 71";    $ Path
+
+        Connection94 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 30",   $ Connection name
+                "Input-Only Slot 30",   $ Help String
+                "20 04 24 64 2C C4 2C 72";    $ Path
+
+        Connection95 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 31",   $ Connection name
+                "Input-Only Slot 31",   $ Help String
+                "20 04 24 64 2C C5 2C 73";    $ Path
+
+        Connection96 =
+                0x02010002,             $ Trigger and transport: class 1, cyclic, input only
+                0x44240305,             $ Connection: point/multicast, heartbeat, scheduled
+                Param3,Param1,,         $ O=>T RPI, size, format
+                Param3,Param2,,         $ T=>O RPI, size, format
+                ,,                      $ config1
+                ,,                      $ config2
+                "Input-Only Slot 32",   $ Connection name
+                "Input-Only Slot 32",   $ Help String
+                "20 04 24 64 2C C6 2C 74";    $ Path
+
+[Port]
+        Port1 =
+                TCP,                    $ Port type
+                "TCP/IP",               $ Port name
+                "20 F5 24 01",          $ Path to object supporting this port
+                2;                      $ Internal Port Number
+
+        Port2 =
+                DeviceNet,              $ Port type
+                "Board 1",              $ Port name
+                "20 03 24 01",          $ Path to object supporting this port - DNet object
+                3;                      $ Internal Port Number
+
+        Port3 =
+                DeviceNet,              $ Port type
+                "Board 2",              $ Port name
+                "20 03 24 01",          $ Path to object supporting this port - DNet object
+                4;                      $ Internal Port Number
+
+        Port4 =
+                DeviceNet,              $ Port type
+                "Board 3",              $ Port name
+                "20 03 24 01",          $ Path to object supporting this port - DNet object
+                5;                      $ Internal Port Number
+
+        Port5 =
+                DeviceNet,              $ Port type
+                "Board 4",              $ Port name
+                "20 03 24 01",          $ Path to object supporting this port - DNet object
+                6;                      $ Internal Port Number
+
+[Capacity]
+        ConnOverhead = .0;
+        MaxIOConnections = 32;
+        MaxMsgConnections = 6;
+        MaxConsumersPerMcast = 4;
+        TSpec1 = TxRx, 8, 1250;          $ 5 conns at 8ms
+        TSpec2 = TxRx, 24, 1250;         $ 5 conns at 8ms
+
+[Connection Configuration]
+	Revision = 2;
+
+[1_RSNetWorx_CCO_Originator_Specific_Data]
+        1_RSNetWorx_Originator_Specific_Data_Format = 101;
+        1_RSNetWorx_Available_Connections = 32;
+        1_RSNetWorx_Max_DIF_Size = 1024;
+        1_RSNetWorx_Max_DOF_Size = 1024;
+        1_RSNetWorx_Input_Image_File = 1;
+    $ 1_RSNetWorx_Max_Send_Data_Message_Number = 15;
+    $ 1_RSNetWorx_Max_Receive_Data_Message_Number = 15;
+        1_RSNetWorx_OToT_Multicast_Not_Supported = No;
+        1_RSNetWorx_Max_Status_Size = 0;
+
