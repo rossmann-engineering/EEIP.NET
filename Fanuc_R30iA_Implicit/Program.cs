@@ -35,6 +35,9 @@ namespace Fanuc_R30iA_Implicit
             eeipClient.T_O_VariableLength = false;
             eeipClient.T_O_ConnectionType = Sres.Net.EEIP.ConnectionType.Point_to_Point;
             eeipClient.RequestedPacketRate_T_O = 500000;    //RPI in  500ms is the Standard value
+            
+            //Set Instance ID of the Configuration Assembly
+            eeipClient.ConfigurationAssemblyInstanceID = 100;
 
             //Forward open initiates the Implicit Messaging
             eeipClient.ForwardOpen();
