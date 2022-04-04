@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace DiscoverDevices
             {
                 Console.WriteLine("Ethernet/IP Device Found:");
                 Console.WriteLine(cipIdentityItem[i].ProductName1);
-                Console.WriteLine("IP-Address: " + Sres.Net.EEIP.Encapsulation.CIPIdentityItem.getIPAddress(cipIdentityItem[i].SocketAddress.SIN_Address));
+                Console.WriteLine("IP-Address: " + new IPAddress(cipIdentityItem[i].SocketAddress.SIN_Address));
                 Console.WriteLine("Port: " + cipIdentityItem[i].SocketAddress.SIN_port);
                 Console.WriteLine("Vendor ID: " + cipIdentityItem[i].VendorID1);
                 Console.WriteLine("Product-code: " + cipIdentityItem[i].ProductCode1);
