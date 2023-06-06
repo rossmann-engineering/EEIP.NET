@@ -435,7 +435,7 @@ namespace Sres.Net.EEIP
             connectionType = (byte)T_O_ConnectionType; //1=Multicast, 2=P2P
             priority = (byte)T_O_Priority;
             variableLength = T_O_VariableLength;
-            connectionSize = (byte)(T_O_Length  + t_o_headerOffset);
+            connectionSize = (ushort)(T_O_Length  + t_o_headerOffset);
             NetworkConnectionParameters = (UInt16)((UInt16)(connectionSize & 0x1FF) | ((Convert.ToUInt16(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | ((Convert.ToUInt16(redundantOwner)) << 15));
             if (largeForwardOpen)
                 NetworkConnectionParameters = (UInt32)((uint)(connectionSize & 0xFFFF) | ((Convert.ToUInt32(variableLength)) << 25) | (uint)((priority & 0x03) << 26) | (uint)((connectionType & 0x03) << 29) | ((Convert.ToUInt32(redundantOwner)) << 31));
