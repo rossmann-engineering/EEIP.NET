@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Sres.Net.EEIP;
 
 
-//This example demonstrates the usage of Implicit Messaging 
+//This example demonstrates the usage of Implicit Messaging
 //whith an Keyence NU-EP1 Network Unit. This is an Input Only connection.
 //The two received bytes represents the output state of the sensors.
 //Keyence Users Manual Page 3-6 No. 3
@@ -24,7 +24,7 @@ namespace Keyence_NU_RP1_Implicit
 
             //Parameters from Originator -> Target
             eeipClient.O_T_InstanceID = 0xfe;              //Instance ID of the Output Assembly
-            eeipClient.O_T_Length = 0;                     
+            eeipClient.O_T_Length = 0;
             eeipClient.O_T_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Header32Bit;   //Header Format
             eeipClient.O_T_OwnerRedundant = false;
             eeipClient.O_T_Priority = Sres.Net.EEIP.Priority.Low;

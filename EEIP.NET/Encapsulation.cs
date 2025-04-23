@@ -102,7 +102,7 @@ namespace Sres.Net.EEIP
             public byte[] Revision1 = new byte[2];                          //Device revision
             public UInt16 Status1;                                          //Current status of device
             public UInt32 SerialNumber1;                                      //Serial number of device
-            public byte ProductNameLength;                          
+            public byte ProductNameLength;
             public string ProductName1;                                     //Human readable description of device
             public byte State1;                                             //Current state of device
 

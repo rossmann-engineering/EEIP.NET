@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Sres.Net.EEIP;
 
 
-//This example demonstrates the usage of Implicit Messaging 
+//This example demonstrates the usage of Implicit Messaging
 //whith an Keyence NU-EP1 Network Unit. This is an Input Only connection.
 //The 128 received bytes returns the state of the Sensors (Page 3-9 of Keyence Manual contains the assignment).
 //Keyence Users Manual Page 3-6 No. 2

@@ -44,11 +44,11 @@ namespace Sres.Net.EEIP
         /// </summary>
         public UInt32 RequestedPacketRate_T_O { get; set; } = 0x7A120;      //500ms
         /// <summary>
-        /// "1" Indicates that multiple connections are allowed Originator -> Target for Implicit-Messaging (Default: TRUE) 
+        /// "1" Indicates that multiple connections are allowed Originator -> Target for Implicit-Messaging (Default: TRUE)
         /// </summary>
         public bool O_T_OwnerRedundant { get; set; } = true;                //For Forward Open
         /// <summary>
-        /// "1" Indicates that multiple connections are allowed Target -> Originator for Implicit-Messaging (Default: TRUE) 
+        /// "1" Indicates that multiple connections are allowed Target -> Originator for Implicit-Messaging (Default: TRUE)
         /// </summary>
         public bool T_O_OwnerRedundant { get; set; } = true;                //For Forward Open
         /// <summary>
@@ -98,16 +98,16 @@ namespace Sres.Net.EEIP
         /// </summary>
         public byte T_O_InstanceID { get; set; } = 0x65;               //Eingänge
         /// <summary>
-        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
+        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging
         /// </summary>
-        private byte[] _O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T   
+        private byte[] _O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T
 
         private object _O_T_IOData_lock = new object();
 
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
         /// </summary>
-        private byte[] _T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O  
+        private byte[] _T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O
 
         private object _T_O_IOData_lock = new object();
 
@@ -133,9 +133,9 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
         /// Could be used to determine a Timeout
-        /// </summary>        
+        /// </summary>
         public DateTime LastReceivedImplicitMessage { get; set; }
-    
+
         public EEIPClient()
         {
             Console.WriteLine("EEIP Library Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -148,11 +148,10 @@ namespace Sres.Net.EEIP
             lock (this)
             {
                 UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-                
+
                 System.Net.IPEndPoint e = (System.Net.IPEndPoint)((UdpState)(ar.AsyncState)).e;
 
                 Byte[] receiveBytes = u.EndReceive(ar, ref e);
-                string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
                 // EndReceive worked and we have received data and remote endpoint
                 if (receiveBytes.Length > 0)
@@ -164,7 +163,7 @@ namespace Sres.Net.EEIP
                         returnList.Add(Encapsulation.CIPIdentityItem.getCIPIdentityItem(24, receiveBytes));
                     }
                 }
-                var asyncResult = u.BeginReceive(new AsyncCallback(ReceiveCallback), (UdpState)(ar.AsyncState));
+                u.BeginReceive(new AsyncCallback(ReceiveCallback), (UdpState)(ar.AsyncState));
             }
 
         }
@@ -180,10 +179,10 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
-        /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>	
+        /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>
         public List<Encapsulation.CIPIdentityItem> ListIdentity()
         {
-            
+
             foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {
                 if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
@@ -208,7 +207,7 @@ namespace Sres.Net.EEIP
                             s.e = endPoint;
                             s.u = udpClient;
 
-                            var asyncResult = udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+                            udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
 
                             System.Threading.Thread.Sleep(1000);
                         }
@@ -221,9 +220,9 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Sends a RegisterSession command to a target to initiate session
         /// </summary>
-        /// <param name="address">IP-Address of the target device</param> 
-        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="address">IP-Address of the target device</param>
+        /// <param name="port">Port of the target device (default should be 0xAF12)</param>
+        /// <returns>Session Handle</returns>
         public UInt32 RegisterSession(UInt32 address, UInt16 port)
         {
             if (sessionHandle != 0)
@@ -245,7 +244,7 @@ namespace Sres.Net.EEIP
             stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
             byte[] data = new Byte[256];
 
-            Int32 bytes = stream.Read(data, 0, data.Length);
+            stream.Read(data, 0, data.Length);
 
             UInt32 returnvalue = (UInt32)data[4] + (((UInt32)data[5]) << 8) + (((UInt32)data[6]) << 16) + (((UInt32)data[7]) << 24);
             this.sessionHandle = returnvalue;
@@ -254,14 +253,14 @@ namespace Sres.Net.EEIP
 
         /// <summary>
         /// Sends a UnRegisterSession command to a target to terminate session
-        /// </summary> 
+        /// </summary>
         public void UnRegisterSession()
         {
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.Command = Encapsulation.CommandsEnum.UnRegisterSession;
             encapsulation.Length = 0;
             encapsulation.SessionHandle =  sessionHandle;
- 
+
             try
             {
                 stream.Write(encapsulation.toBytes(), 0, encapsulation.toBytes().Length);
@@ -270,7 +269,7 @@ namespace Sres.Net.EEIP
             {
                 //Handle Exception to allow to Close the Stream if the connection was closed by Remote Device
             }
-            byte[] data = new Byte[256];
+
             client.Close();
             stream.Close();
             sessionHandle = 0;
@@ -304,7 +303,7 @@ namespace Sres.Net.EEIP
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
             //!!!!!!-----Length Field at the end!!!!!!!!!!!!!
-            
+
             //---------------Interface Handle CIP
             encapsulation.CommandSpecificData.Add(0);
             encapsulation.CommandSpecificData.Add(0);
@@ -324,7 +323,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.AddressItem = 0x0000;        //NULL (used for UCMM Messages)
             commonPacketFormat.AddressLength = 0x0000;
 
-            
+
             commonPacketFormat.DataItem = 0xB2;
             commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset);
             if (largeForwardOpen)
@@ -461,7 +460,7 @@ namespace Sres.Net.EEIP
             //-XXX---- = Production Trigger, 0 = Cyclic, 1 = CoS, 2 = Application Object
             //----XXXX = Transport class, 0 = Class 0, 1 = Class 1, 2 = Class 2, 3 = Class 3
             //----------------Transport Type Trigger
-            //Connection Path size 
+            //Connection Path size
             commonPacketFormat.Data.Add((byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1) ));
             //Verbindugspfad
             commonPacketFormat.Data.Add((byte)(0x20));
@@ -478,9 +477,9 @@ namespace Sres.Net.EEIP
                 commonPacketFormat.Data.Add((byte)(0x2C));
                 commonPacketFormat.Data.Add((byte)(T_O_InstanceID));
             }
-            
+
             //AddSocket Addrress Item O->T
-            
+
                 commonPacketFormat.SocketaddrInfo_O_T = new Encapsulation.SocketAddress();
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_port = OriginatorUDPPort;
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_family = 2;
@@ -502,11 +501,11 @@ namespace Sres.Net.EEIP
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
             System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
             //encapsulation.toBytes();
-            
+
             stream.Write(dataToWrite, 0, dataToWrite.Length);
             byte[] data = new Byte[564];
 
-            Int32 bytes = stream.Read(data, 0, data.Length);
+            stream.Read(data, 0, data.Length);
 
             //--------------------------BEGIN Error?
             if (data[42] != 0)      //Exception codes see "Table B-1.1 CIP General Status Codes"
@@ -557,13 +556,13 @@ namespace Sres.Net.EEIP
             {
                 System.Net.IPAddress multicast = (new System.Net.IPAddress(multicastAddress));
                 udpClientReceive.JoinMulticastGroup(multicast);
-              
+
             }
 
             System.Threading.Thread sendThread = new System.Threading.Thread(sendUDP);
             sendThread.Start();
 
-            var asyncResult = udpClientReceive.BeginReceive(new AsyncCallback(ReceiveCallbackClass1), s);
+            udpClientReceive.BeginReceive(new AsyncCallback(ReceiveCallbackClass1), s);
         }
 
         public void LargeForwardOpen()
@@ -714,7 +713,7 @@ namespace Sres.Net.EEIP
             commonPacketFormat.Data.Add(0xFF);
             //----------------Originator Serial Number
 
-            //Connection Path size 
+            //Connection Path size
             commonPacketFormat.Data.Add((byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1)));
             //Reserved
             commonPacketFormat.Data.Add(0);
@@ -753,7 +752,7 @@ namespace Sres.Net.EEIP
 
             try
             {
-                Int32 bytes = stream.Read(data, 0, data.Length);
+                stream.Read(data, 0, data.Length);
             }
             catch (Exception e)
             {
@@ -771,8 +770,8 @@ namespace Sres.Net.EEIP
             //Close the Socket for Receive
             udpClientReceiveClosed = true;
             udpClientReceive.Close();
-  
-           
+
+
 
 
         }
@@ -790,9 +789,7 @@ namespace Sres.Net.EEIP
             {
                 byte[] o_t_IOData = new byte[564];
                 System.Net.IPEndPoint endPointsend = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(IPAddress), TargetUDPPort);
-               
-                UdpState send = new UdpState();
-                 
+
                 //---------------Item count
                 o_t_IOData[0] = 2;
                 o_t_IOData[1] = 0;
@@ -811,17 +808,17 @@ namespace Sres.Net.EEIP
                 //---------------connection ID
                 sequenceCount++;
                 o_t_IOData[6] = (byte)(connectionID_O_T);
-                o_t_IOData[7] = (byte)(connectionID_O_T >> 8); 
-                o_t_IOData[8] = (byte)(connectionID_O_T >> 16); 
+                o_t_IOData[7] = (byte)(connectionID_O_T >> 8);
+                o_t_IOData[8] = (byte)(connectionID_O_T >> 16);
                 o_t_IOData[9] = (byte)(connectionID_O_T >> 24);
-                //---------------connection ID     
+                //---------------connection ID
 
                 //---------------sequence count
                 o_t_IOData[10] = (byte)(sequenceCount);
                 o_t_IOData[11] = (byte)(sequenceCount >> 8);
                 o_t_IOData[12] = (byte)(sequenceCount >> 16);
                 o_t_IOData[13] = (byte)(sequenceCount >> 24);
-                //---------------sequence count            
+                //---------------sequence count
 
                 //---------------Type ID
                 o_t_IOData[14] = 0xB1;
@@ -878,7 +875,7 @@ namespace Sres.Net.EEIP
         }
 
         private void ReceiveCallbackClass1(IAsyncResult ar)
-        {          
+        {
             UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
             if (udpClientReceiveClosed)
                 return;
@@ -921,9 +918,9 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Sends a RegisterSession command to a target to initiate session
         /// </summary>
-        /// <param name="address">IP-Address of the target device</param> 
-        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="address">IP-Address of the target device</param>
+        /// <param name="port">Port of the target device (default should be 0xAF12)</param>
+        /// <returns>Session Handle</returns>
         public UInt32 RegisterSession(string address, UInt16 port)
         {
             string[] addressSubstring = address.Split('.');
@@ -934,8 +931,8 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port (Standard: 0xAF12)
         /// </summary>
-        /// <param name="address">IP-Address of the target device</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="address">IP-Address of the target device</param>
+        /// <returns>Session Handle</returns>
         public UInt32 RegisterSession(string address)
         {
             string[] addressSubstring = address.Split('.');
@@ -946,10 +943,9 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port and Predefined IPAddress (Standard-Port: 0xAF12)
         /// </summary>
-        /// <returns>Session Handle</returns>	
+        /// <returns>Session Handle</returns>
         public UInt32 RegisterSession()
         {
-            
             return RegisterSession(this.IPAddress, this.TCPPort);
         }
 
@@ -958,7 +954,6 @@ namespace Sres.Net.EEIP
             byte[] requestedPath = GetEPath(classID, instanceID, attributeID);
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[42+ requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
@@ -1035,15 +1030,14 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
         /// </summary>
-        /// <param name="classID">Class id of requested Attributes</param> 
-        /// <param name="instanceID">Instance of Requested Attributes (0 for class Attributes)</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="classID">Class id of requested Attributes</param>
+        /// <param name="instanceID">Instance of Requested Attributes (0 for class Attributes)</param>
+        /// <returns>Session Handle</returns>
         public byte[] GetAttributeAll(int classID, int instanceID)
         {
             byte[] requestedPath = GetEPath(classID, instanceID, 0);
             if (sessionHandle == 0)             //If a Session is not Registered, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[42 + requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
@@ -1093,7 +1087,7 @@ namespace Sres.Net.EEIP
             byte[] dataToWrite = new byte[encapsulation.toBytes().Length + commonPacketFormat.toBytes().Length];
             System.Buffer.BlockCopy(encapsulation.toBytes(), 0, dataToWrite, 0, encapsulation.toBytes().Length);
             System.Buffer.BlockCopy(commonPacketFormat.toBytes(), 0, dataToWrite, encapsulation.toBytes().Length, commonPacketFormat.toBytes().Length);
-           
+
 
             stream.Write(dataToWrite, 0, dataToWrite.Length);
             byte[] data = new Byte[564];
@@ -1117,7 +1111,6 @@ namespace Sres.Net.EEIP
             byte[] requestedPath = GetEPath(classID, instanceID, attributeID);
             if (sessionHandle == 0)             //If a Session is not Registers, Try to Registers a Session with the predefined IP-Address and Port
                 this.RegisterSession();
-            byte[] dataToSend = new byte[42 + value.Length + requestedPath.Length];
             Encapsulation encapsulation = new Encapsulation();
             encapsulation.SessionHandle = sessionHandle;
             encapsulation.Command = Encapsulation.CommandsEnum.SendRRData;
@@ -1213,7 +1206,7 @@ namespace Sres.Net.EEIP
                 byteCount = byteCount + 2;
             else
                 byteCount = byteCount + 4;
-           
+
             if (instanceID < 0xff)
                 byteCount = byteCount + 2;
             else
@@ -1279,7 +1272,7 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
         /// </summary>
-        /// <param name="classID">Class id of requested Attributes</param> 
+        /// <param name="classID">Class id of requested Attributes</param>
         public byte[] GetAttributeAll(int classID)
         {
             return this.GetAttributeAll(classID, 0);
@@ -1345,7 +1338,7 @@ namespace Sres.Net.EEIP
         }
 
         /// <summary>
-        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
+        /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging
         /// </summary>
         public byte[] O_T_IOData
         {
@@ -1388,7 +1381,7 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Converts a bytearray (received e.g. via getAttributeSingle) to ushort
         /// </summary>
-        /// <param name="byteArray">bytearray to convert</param> 
+        /// <param name="byteArray">bytearray to convert</param>
         public static ushort ToUshort(byte[] byteArray)
         {
             UInt16 returnValue;
@@ -1399,7 +1392,7 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Converts a bytearray (received e.g. via getAttributeSingle) to uint
         /// </summary>
-        /// <param name="byteArray">bytearray to convert</param> 
+        /// <param name="byteArray">bytearray to convert</param>
         public static uint ToUint(byte[] byteArray)
         {
             UInt32 returnValue = ((UInt32)byteArray[3] << 24 | (UInt32)byteArray[2] << 16 | (UInt32)byteArray[1] << 8 | (UInt32)byteArray[0]);
@@ -1409,12 +1402,11 @@ namespace Sres.Net.EEIP
         /// <summary>
         /// Returns the "Bool" State of a byte Received via getAttributeSingle
         /// </summary>
-        /// <param name="inputByte">byte to convert</param> 
-        /// <param name="bitposition">bitposition to convert (First bit = bitposition 0)</param> 
+        /// <param name="inputByte">byte to convert</param>
+        /// <param name="bitposition">bitposition to convert (First bit = bitposition 0)</param>
         /// <returns>Converted bool value</returns>
         public static bool ToBool(byte inputByte, int bitposition)
         {
-           
             return (((inputByte>>bitposition)&0x01) != 0) ? true : false;
         }
     }
@@ -1440,7 +1432,5 @@ namespace Sres.Net.EEIP
         ZeroLength = 1,
         Heartbeat = 2,
         Header32Bit = 3
-
-        
     }
 }

@@ -15,7 +15,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         /// <summary>
         /// Returns the Explanation of a given statuscode (Table 3-5-29) Page 3-75 Vol 1
         /// </summary>
-        /// <param name="statusCode">Extended Status Code</param> 
+        /// <param name="statusCode">Extended Status Code</param>
         public static string GetExtendedStatus(uint statusCode)
         {
             switch(statusCode)
