@@ -556,8 +556,11 @@ namespace Sres.Net.EEIP
             if (multicastAddress != 0)
             {
                 System.Net.IPAddress multicast = (new System.Net.IPAddress(multicastAddress));
-                udpClientReceive.JoinMulticastGroup(multicast);
-              
+
+                System.Net.IPEndPoint localEndPoint = (System.Net.IPEndPoint)client.Client.LocalEndPoint;
+                System.Net.IPAddress localIP = localEndPoint.Address;
+
+                udpClientReceive.JoinMulticastGroup(multicast, localIP);
             }
 
             System.Threading.Thread sendThread = new System.Threading.Thread(sendUDP);
