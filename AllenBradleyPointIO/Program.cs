@@ -12,7 +12,7 @@ using Sres.Net.EEIP;
 // Allen-Bradley 1734-OB4E 4-Channel Digital Output Module
 // Allen-Bradley 1734-OB4E 4-Channel Digital Output Module
 // IP-Address: 192.168.178.107 (By DHCP-Server)
-// This example also handles a reconnection procedure if the Impicit Messaging has Timed out 
+// This example also handles a reconnection procedure if the Impicit Messaging has Timed out
 // (If the Property "LastReceivedImplicitMessage" is more than one second ago)
 namespace AllenBradleyPointIO
 {
@@ -51,7 +51,7 @@ namespace AllenBradleyPointIO
 
             while(true)
             {
-                
+
                 //Read the Inputs Transfered form Target -> Originator
                 Console.WriteLine("State of first Input byte: " + eeipClient.T_O_IOData[8]);
                 Console.WriteLine("State of second Input byte: " + eeipClient.T_O_IOData[9]);
@@ -71,7 +71,7 @@ namespace AllenBradleyPointIO
                     {
                         eeipClient.ForwardClose();
                         eeipClient.UnRegisterSession();
-                    
+
                         eeipClient.RegisterSession();
                         eeipClient.ForwardOpen();
                     }

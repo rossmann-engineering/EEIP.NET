@@ -85,7 +85,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
                     returnValue[i] = (UInt16)(byteArray[1 + 2*i] << 8 | byteArray[0 + 2*i]);
                 }
                 return returnValue;
-            
+
             }
         }
 

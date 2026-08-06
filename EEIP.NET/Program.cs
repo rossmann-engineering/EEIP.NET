@@ -15,11 +15,11 @@ namespace ConsoleApplication1
 
             //UInt32 sessionHandle = eipClient.RegisterSession("192.168.178.66", 0xAF12);
 
-            UInt32 sessionHandle =  eipClient.RegisterSession("192.168.178.107", 0xAF12);
+            eipClient.RegisterSession("192.168.178.107", 0xAF12);
             //            eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Null;
             //            eipClient.O_T_Length = 0;
-           
-            
+
+
             eipClient.O_T_InstanceID = 101;
             eipClient.O_T_Length = 2;//7;
             eipClient.O_T_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Header32Bit;
@@ -27,7 +27,7 @@ namespace ConsoleApplication1
             eipClient.O_T_Priority = Sres.Net.EEIP.Priority.High;
             eipClient.O_T_VariableLength = false;
             eipClient.O_T_ConnectionType = Sres.Net.EEIP.ConnectionType.Point_to_Point;
-            
+
             eipClient.T_O_InstanceID = 104;
             eipClient.T_O_Length = 3;
             eipClient.T_O_RealTimeFormat = Sres.Net.EEIP.RealTimeFormat.Modeless;
@@ -36,7 +36,7 @@ namespace ConsoleApplication1
             eipClient.T_O_VariableLength = false;
             eipClient.T_O_ConnectionType = Sres.Net.EEIP.ConnectionType.Multicast;
             eipClient.ForwardOpen();
-            
+
             for (int i = 0; i < 3; i++ )
             {
                 eipClient.O_T_IOData[0] = 1;
@@ -50,7 +50,7 @@ namespace ConsoleApplication1
 
 
             }
-            
+
             Console.ReadKey();
             while (true)
             {
@@ -64,7 +64,7 @@ namespace ConsoleApplication1
             }
             eipClient.ForwardClose();
             System.Threading.Thread.Sleep(1000);
-     
+
 
 
             Console.ReadKey();

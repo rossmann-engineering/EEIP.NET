@@ -5,7 +5,7 @@ using Sres.Net.EEIP;
 // Turck FEN20-4DIP-4DXP
 //Unisversal Digital Channels are used as Digital Outputs
 // Manual: http://pdb2.turck.de/repo/media/_en/Anlagen/Datei_EDB/edb_6931090_gbr_en.pdf
-//IP-Address: 192.168.1.254 
+//IP-Address: 192.168.1.254
 
 namespace TurckFEN20
 {

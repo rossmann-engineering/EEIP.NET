@@ -38,7 +38,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
                 return status;
             }
         }
-    
+
 
         /// <summary>
         /// gets the Configuration capability / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 2
@@ -144,7 +144,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
             public bool NotConfigured;
             public bool ValidConfiguration;
             public bool ValidManualConfiguration;
-            public bool McastPending;  
+            public bool McastPending;
         }
 
     /// <summary>

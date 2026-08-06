@@ -39,8 +39,8 @@ namespace ConsoleApplication1
             Console.WriteLine("Current light Intensity Sensor 2 in %: " + (response[1] * 255 + response[0]).ToString());
             eeipClient.UnRegisterSession();
             Console.ReadKey();
-     
-       
+
+
         }
     }
 }

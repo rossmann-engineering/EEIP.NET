@@ -25,7 +25,7 @@ namespace Sres.Net.EEIP.ObjectLibrary
         /// <returns>bytes of the Instance</returns>
         public byte[] getInstance(int instanceNo)
         {
-            
+
                 byte[] byteArray = eeipClient.GetAttributeSingle(4, instanceNo, 3);
                 return byteArray;
         }
